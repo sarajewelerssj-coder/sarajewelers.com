@@ -1,0 +1,66 @@
+export const categoriesData = [
+  {
+    id: 1,
+    name: "Engagement Rings",
+    slug: "engagement-rings",
+    image: "/images/categories/Engangement rings.webp",
+    description: "Find the perfect symbol of your love with our stunning engagement ring collection.",
+  },
+  {
+    id: 2,
+    name: "Wedding Rings",
+    slug: "wedding-rings",
+    image: "/images/categories/Wedding rings.webp",
+    description: "Celebrate your commitment with our beautiful wedding bands and ring sets.",
+  },
+  {
+    id: 3,
+    name: "Earrings",
+    slug: "earrings",
+    image: "/images/categories/earrings.webp",
+    description: "From elegant studs to statement drops, find the perfect pair to complement your style.",
+  },
+  {
+    id: 4,
+    name: "Bracelets",
+    slug: "bracelets",
+    image: "/images/categories/braclet.webp",
+    description: "Adorn your wrist with our collection of stunning bracelets in various styles and metals.",
+  },
+  {
+    id: 5,
+    name: "Pendants & Necklaces",
+    slug: "pendants-necklaces",
+    image: "/images/categories/neckleses.webp",
+    description: "From delicate chains to statement pendants, find the perfect piece to express your style.",
+  },
+  {
+    id: 6,
+    name: "Wedding Sets",
+    slug: "wedding-sets",
+    image: "/images/categories/wedding set.webp",
+    description: "Perfectly matched engagement and wedding ring sets for a coordinated look.",
+  },
+  {
+    id: 7,
+    name: "Gemstone Jewelry",
+    slug: "gemstone-jewelry",
+    image: "/images/categories/gemstone jewelery.webp",
+    description: "Vibrant colored gemstones set in beautiful designs to add a pop of color to any outfit.",
+  },
+  {
+    id: 8,
+    name: "Men's Jewelry",
+    slug: "mens-jewelry",
+    image: "/images/categories/Mens jewelery.webp",
+    description: "Sophisticated and stylish jewelry pieces designed specifically for men.",
+  },
+  {
+    id: 9,
+    name: "Fine Jewelry",
+    slug: "fine-jewelry",
+    image: "/images/categories/fine jewelery.webp",
+    description: "Exquisite fine jewelry crafted with precious metals and gemstones for the most discerning taste.",
+  },
+]
+
