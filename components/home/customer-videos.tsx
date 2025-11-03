@@ -20,20 +20,20 @@ export default function CustomerVideos() {
   const cardRefs = useRef<(HTMLButtonElement | null)[]>([])
 
   const videos = [
-    "https://res.cloudinary.com/dibq23c59/video/upload/v1760888475/1_t7ww4c.mp4",
-    "https://res.cloudinary.com/dibq23c59/video/upload/v1760888449/2_ydlfwf.mp4",
-    "https://res.cloudinary.com/dibq23c59/video/upload/v1760888449/3_nzev2y.mp4",
-    "https://res.cloudinary.com/dibq23c59/video/upload/v1760888432/4_ow7ohs.mp4",
-    "https://res.cloudinary.com/dibq23c59/video/upload/v1760888421/5_wiyjhl.mp4",
-    "https://res.cloudinary.com/dibq23c59/video/upload/v1760888488/6_qqf1mw.mp4",
-    "https://res.cloudinary.com/dibq23c59/video/upload/v1760888512/7_gi1zt8.mp4",
-    "https://res.cloudinary.com/dibq23c59/video/upload/v1760888490/8_ynw1zs.mp4",
-    "https://res.cloudinary.com/dibq23c59/video/upload/v1760888459/9_sl1irk.mp4",
-    "https://res.cloudinary.com/dibq23c59/video/upload/v1760888461/10_thuln1.mp4",
-    "https://res.cloudinary.com/dibq23c59/video/upload/v1760888466/11_kbhbxa.mp4",
-    "https://res.cloudinary.com/dibq23c59/video/upload/v1760888478/12_d3euly.mp4",
-    "https://res.cloudinary.com/dibq23c59/video/upload/v1760888495/13_krwftd.mp4",
-    "https://res.cloudinary.com/dibq23c59/video/upload/v1760888497/14_qlkkir.mp4"
+    "https://res.cloudinary.com/dibq23c59/video/upload/v1762206551/1_semulh.mp4",
+    "https://res.cloudinary.com/dibq23c59/video/upload/v1762206525/2_ytvroz.mp4",
+    "https://res.cloudinary.com/dibq23c59/video/upload/v1762206510/3_ahbtma.mp4",
+    "https://res.cloudinary.com/dibq23c59/video/upload/v1762206500/4_tdinjk.mp4",
+    "https://res.cloudinary.com/dibq23c59/video/upload/v1762206514/5_stcfnj.mp4",
+    "https://res.cloudinary.com/dibq23c59/video/upload/v1762206560/6_pne8dt.mp4",
+    "https://res.cloudinary.com/dibq23c59/video/upload/v1762206581/7_hi2y1v.mp4",
+    "https://res.cloudinary.com/dibq23c59/video/upload/v1762206556/8_cgrac4.mp4",
+    "https://res.cloudinary.com/dibq23c59/video/upload/v1762206563/9_k6qmia.mp4",
+    "https://res.cloudinary.com/dibq23c59/video/upload/v1762206550/10_htvs8g.mp4",
+    "https://res.cloudinary.com/dibq23c59/video/upload/v1762206563/11_wzih6z.mp4",
+    "https://res.cloudinary.com/dibq23c59/video/upload/v1762206500/12_pp3rnj.mp4",
+    "https://res.cloudinary.com/dibq23c59/video/upload/v1762206540/13_ryi8g7.mp4",
+    "https://res.cloudinary.com/dibq23c59/video/upload/v1762206545/14_mdf0ce.mp4"
   ]
 
   const videosPerSlide = 4
