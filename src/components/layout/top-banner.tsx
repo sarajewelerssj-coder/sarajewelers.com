@@ -31,7 +31,7 @@ export default function TopBanner() {
         Book Consultation
       </Link>
       <div className="text-center text-xs md:text-sm font-semibold tracking-[0.15em] uppercase">
-        Handcrafted Excellence <span className="mx-2 opacity-50">|</span> Free Express Shipping Over ${shippingThreshold !== null ? shippingThreshold.toLocaleString() : "2,000"} <span className="mx-2 opacity-50">|</span> Expert Services
+        Handcrafted Excellence <span className="mx-2 opacity-50">|</span> Free Express Shipping Over ${shippingThreshold !== null ? shippingThreshold.toLocaleString() : "100"} <span className="mx-2 opacity-50">|</span> Expert Services
       </div>
       <div className="flex items-center gap-2 hover:text-white transition-colors duration-300">
         <Phone size={14} />

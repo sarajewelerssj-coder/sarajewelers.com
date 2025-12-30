@@ -68,7 +68,7 @@ async function seedSettingsInternal() {
   try {
     const data = {
       companyName: process.env.COMPANY_NAME || 'Sara Jewelers',
-      companyLogo: process.env.NEXT_PUBLIC_LOGO_URL || 'https://sarajeweler.com/logo.webp',
+      companyLogo: process.env.NEXT_PUBLIC_LOGO_URL || 'https://sarajewelers.com/logo.webp',
       contactEmail: process.env.EMAIL_USER || 'S.wcollections2@gmail.com',
     }
     

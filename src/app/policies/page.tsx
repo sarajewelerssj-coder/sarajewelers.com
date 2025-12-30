@@ -271,7 +271,7 @@ export default function PoliciesPage() {
               <Mail className="text-[#d4af37]" />
               <div>
                 <p className="text-sm font-bold uppercase tracking-wider text-gray-900 dark:text-white">Legal Inquiries</p>
-                <p className="text-sm">legal@sarajewelers.com</p>
+                <p className="text-sm">S.wcollections2@gmail.com</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400">

@@ -1,52 +1,33 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Sparkles, Star } from "lucide-react"
-import { gsap } from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger)
-}
 
 export default function PromoBanner() {
-  const contentRef = useRef<HTMLDivElement>(null)
-  const badgeRef = useRef<HTMLDivElement>(null)
-  const headingRef = useRef<HTMLHeadingElement>(null)
-  const descRef = useRef<HTMLParagraphElement>(null)
-  const buttonsRef = useRef<HTMLDivElement>(null)
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  }
 
-  useEffect(() => {
-    if (typeof window === "undefined") return
-
-    const elements = [badgeRef, headingRef, descRef, buttonsRef]
-    
-    elements.forEach((ref, index) => {
-      if (ref.current) {
-        gsap.set(ref.current, { y: 50, opacity: 0 })
-        
-        ScrollTrigger.create({
-          trigger: ref.current,
-          start: "top 85%",
-          toggleActions: "play reverse play reverse",
-          animation: gsap.to(ref.current, {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            delay: index * 0.2,
-            ease: "back.out(1.7)"
-          })
-        })
-      }
-    })
-
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
-    }
-  }, [])
+  const itemVariants = {
+    hidden: { y: 30, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+        ease: [0.22, 1, 0.36, 1] as any,
+      },
+    },
+  }
 
   return (
     <section className="py-20 md:py-28 relative overflow-hidden">
@@ -56,7 +37,8 @@ export default function PromoBanner() {
           src="/images/banners/Premium Collection.webp"
           alt="Luxury Jewelry"
           fill
-          className="object-cover scale-110 transition-transform [transition-duration:10000ms] ease-out"
+          className="object-cover scale-110 transition-transform duration-700 hover:scale-100"
+          priority
         />
         {/* Enhanced Gradient Overlays */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/70" />
@@ -64,70 +46,105 @@ export default function PromoBanner() {
       </div>
 
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 z-5 opacity-30">
-        <div className="absolute top-20 left-10 animate-pulse">
+      <div className="absolute inset-0 z-5 opacity-30 select-none pointer-events-none">
+        <motion.div
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
+          transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
+          className="absolute top-20 left-10"
+        >
           <Sparkles className="text-[#d4af37] w-8 h-8" />
-        </div>
-        <div className="absolute top-40 right-20 animate-pulse delay-1000">
+        </motion.div>
+        <motion.div
+          animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.5, 0.2] }}
+          transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, delay: 1 }}
+          className="absolute top-40 right-20"
+        >
           <Star className="text-[#d4af37] w-6 h-6" />
-        </div>
-        <div className="absolute bottom-32 left-1/4 animate-pulse delay-2000">
-          <Sparkles className="text-[#d4af37] w-5 h-5" />
-        </div>
-        <div className="absolute top-1/3 right-1/3 w-32 h-32 border border-[#d4af37]/20 rounded-full animate-spin" style={{ animationDuration: '20s' }} />
-        <div className="absolute bottom-1/4 left-1/3 w-20 h-20 border border-[#d4af37]/30 rounded-full animate-bounce" />
+        </motion.div>
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 25, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+          className="absolute top-1/3 right-1/3 w-32 h-32 border border-[#d4af37]/20 rounded-full"
+        />
+        <motion.div
+          animate={{ y: [0, -20, 0] }}
+          transition={{ duration: 6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+          className="absolute bottom-1/4 left-1/3 w-20 h-20 border border-[#d4af37]/30 rounded-full"
+        />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-4xl">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          className="max-w-4xl"
+        >
           {/* Enhanced Limited Time Badge */}
-          <div ref={badgeRef} className="inline-flex items-center gap-3 bg-[#d4af37]/20 backdrop-blur-md border border-[#d4af37]/40 px-6 py-3 rounded-full mb-8 animate-pulse">
-            <div className="w-3 h-3 bg-[#d4af37] rounded-full animate-ping" />
-            <span className="text-[#d4af37] text-sm md:text-base font-bold tracking-widest uppercase">
+          <motion.div
+            variants={itemVariants}
+            className="inline-flex items-center gap-3 bg-[#d4af37]/20 backdrop-blur-md border border-[#d4af37]/40 px-6 py-3 rounded-full mb-8 group cursor-default"
+          >
+            <div className="w-3 h-3 bg-[#d4af37] rounded-full relative">
+              <div className="absolute inset-0 bg-[#d4af37] rounded-full animate-ping opacity-75" />
+            </div>
+            <span className="text-[#d4af37] text-sm md:text-base font-bold tracking-widest uppercase group-hover:tracking-[0.15em] transition-all duration-300">
               Limited Time Offer
             </span>
-          </div>
-          
+          </motion.div>
+
           {/* Main Heading with Animation */}
-          <h2 ref={headingRef} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif italic font-bold text-white mb-4 sm:mb-6 leading-tight tracking-tight" style={{ fontFamily: 'var(--font-serif)' }}>
+          <motion.h2
+            variants={itemVariants}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif italic font-bold text-white mb-6 leading-tight tracking-tight"
+            style={{ fontFamily: "var(--font-serif)" }}
+          >
             <span className="block mb-2">Exclusive Collection</span>
-            <span className="bg-gradient-to-r from-[#d4af37] via-[#f4d03f] to-[#d4af37] bg-clip-text text-transparent animate-pulse text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
+            <span className="bg-gradient-to-r from-[#d4af37] via-[#f4d03f] to-[#d4af37] bg-clip-text text-transparent inline-block animate-pulse text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
               30% OFF
             </span>
-          </h2>
-          
+          </motion.h2>
+
           {/* Enhanced Description */}
-          <p ref={descRef} className="text-white/90 text-base sm:text-lg md:text-xl mb-8 sm:mb-10 max-w-3xl leading-relaxed">
+          <motion.p
+            variants={itemVariants}
+            className="text-white/90 text-base sm:text-lg md:text-xl mb-8 sm:mb-10 max-w-3xl leading-relaxed"
+          >
             Discover our exclusive collection of handcrafted jewelry pieces. Each piece is meticulously designed to
             bring out your unique style and elegance.
-          </p>
-          
+          </motion.p>
+
           {/* Enhanced CTA Buttons */}
-          <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-6">
+          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-6">
             <Link href="/categories">
-              <Button className="group relative overflow-hidden bg-gradient-to-r from-[#d4af37] to-[#f4d03f] hover:from-[#f4d03f] hover:to-[#d4af37] text-black font-bold px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-6 text-base sm:text-lg md:text-xl rounded-full shadow-2xl hover:shadow-[#d4af37]/50 transition-all duration-500 hover:scale-110 hover:-translate-y-3 border-2 border-[#d4af37]/30">
-                {/* Shimmer Effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                <span className="relative z-10 flex items-center gap-2 sm:gap-3">
+              <Button className="group relative overflow-hidden bg-gradient-to-r from-[#d4af37] to-[#f4d03f] hover:from-[#f4d03f] hover:to-[#d4af37] text-black font-bold px-8 sm:px-10 py-5 sm:py-7 text-lg sm:text-xl rounded-full shadow-2xl hover:shadow-[#d4af37]/50 transition-all duration-500 hover:scale-105 active:scale-95 border-2 border-[#d4af37]/30">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                <span className="relative z-10 flex items-center gap-3">
                   Shop Now
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 transition-transform group-hover:translate-x-2 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-5 h-5 sm:w-6 sm:h-6 transition-transform group-hover:translate-x-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </span>
               </Button>
             </Link>
-            
+
             <Link href="/custom-design">
-              <Button className="group bg-white/10 backdrop-blur-md hover:bg-white/20 text-white font-bold px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-6 text-base sm:text-lg md:text-xl rounded-full border-2 border-white/30 hover:border-[#d4af37] transition-all duration-500 hover:scale-105 hover:text-[#d4af37]">
+              <Button className="group bg-white/10 backdrop-blur-md hover:bg-white/20 text-white font-bold px-8 sm:px-10 py-5 sm:py-7 text-lg sm:text-xl rounded-full border-2 border-white/30 hover:border-[#d4af37] transition-all duration-500 hover:scale-105 active:scale-95 hover:text-[#d4af37]">
                 Learn More
               </Button>
             </Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
-      
+
       {/* Bottom Fade Effect - Optimized for luxury look */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white/30 dark:from-gray-900/30 to-transparent z-10" />
+      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white/10 dark:from-black/20 to-transparent z-10" />
     </section>
   )
 }

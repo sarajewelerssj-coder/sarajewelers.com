@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 
-import { ArrowLeft, Save, X, Image as ImageIcon, Upload, Grid3x3, Star, RotateCcw, Plus, Minus, Sparkles, Loader2 } from 'lucide-react'
+import { ArrowLeft, Save, X, Image as ImageIcon, Upload, Grid3x3, Star, RotateCcw, Plus, Minus, Sparkles, Loader2, MessageSquare } from 'lucide-react'
 import { toast } from 'sonner'
 import ProductVariations from '@/components/admin/ProductVariations'
 import ProductSpecifications from '@/components/admin/ProductSpecifications'
@@ -54,6 +54,15 @@ export default function ProductEditPage() {
     isNewProduct: false,
     isFeatured: false
   })
+
+  const [aiInstructions, setAiInstructions] = useState({
+    description: '',
+    longDescription: '',
+    specifications: '',
+    variations: ''
+  })
+
+  const [activeInstructionField, setActiveInstructionField] = useState<string | null>(null)
   
   const [variations, setVariations] = useState<Variation[]>([])
   const [specifications, setSpecifications] = useState<Specification[]>([])
@@ -180,7 +189,8 @@ export default function ProductEditPage() {
           productName: formData.name,
           categories: formData.categories,
           type: type === 'short' ? 'short' : 'long',
-          keywords: formData.categories.join(', ')
+          keywords: formData.categories.join(', '),
+          instructions: type === 'short' ? aiInstructions.description : aiInstructions.longDescription
         })
       })
 
@@ -217,7 +227,8 @@ export default function ProductEditPage() {
         body: JSON.stringify({
           productName: formData.name,
           categories: formData.categories,
-          type: 'pricing'
+          type: 'pricing',
+          instructions: 'Suggest realistic jewelry pricing and inventory.'
         })
       })
       const data = await response.json()
@@ -295,7 +306,8 @@ export default function ProductEditPage() {
         body: JSON.stringify({
           productName: formData.name,
           categories: formData.categories,
-          type: 'specifications'
+          type: 'specifications',
+          instructions: aiInstructions.specifications
         })
       })
       const data = await response.json()
@@ -324,7 +336,8 @@ export default function ProductEditPage() {
         body: JSON.stringify({
           productName: formData.name,
           categories: formData.categories,
-          type: 'variations'
+          type: 'variations',
+          instructions: aiInstructions.variations
         })
       })
       const data = await response.json()
@@ -782,16 +795,39 @@ export default function ProductEditPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex justify-between items-center">
                     <span>Description <span className="text-red-500">*</span></span>
-                    <button
-                      type="button"
-                      onClick={() => handleGenerateAI('short')}
-                      disabled={generatingDesc}
-                      className="text-xs flex items-center gap-1.5 text-[#d4af37] hover:text-[#b8941f] disabled:opacity-50 transition-colors font-bold uppercase tracking-wider"
-                    >
-                      {generatingDesc ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                      {generatingDesc ? 'Writing...' : 'Auto-Write'}
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => handleGenerateAI('short')}
+                        disabled={generatingDesc}
+                        className="text-[10px] flex items-center gap-1 text-[#d4af37] hover:text-[#b8941f] disabled:opacity-50 transition-colors font-bold uppercase tracking-wider"
+                        title="Quick Auto-Write"
+                      >
+                        {generatingDesc ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                        {generatingDesc ? 'Writing...' : 'Auto'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveInstructionField(activeInstructionField === 'description' ? null : 'description')}
+                        className={`text-[10px] flex items-center gap-1 transition-colors font-bold uppercase tracking-wider ${activeInstructionField === 'description' ? 'text-blue-500' : 'text-gray-400 hover:text-gray-600'}`}
+                      >
+                        <MessageSquare className="w-3 h-3" />
+                        Guided
+                      </button>
+                    </div>
                   </label>
+                  {activeInstructionField === 'description' && (
+                    <div className="mb-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                      <input 
+                        type="text"
+                        placeholder="e.g., Mention it's a gift for wedding"
+                        value={aiInstructions.description}
+                        onChange={(e) => setAiInstructions({...aiInstructions, description: e.target.value})}
+                        className="w-full px-3 py-1.5 text-xs bg-blue-50/50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/20 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-700 dark:text-gray-300"
+                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleGenerateAI('short'))}
+                      />
+                    </div>
+                  )}
                   <textarea
                     required
                     value={formData.description}
@@ -804,16 +840,38 @@ export default function ProductEditPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex justify-between items-center">
                     <span>Long Description</span>
-                    <button
-                      type="button"
-                      onClick={() => handleGenerateAI('long')}
-                      disabled={generatingLongDesc}
-                      className="text-xs flex items-center gap-1.5 text-[#d4af37] hover:text-[#b8941f] disabled:opacity-50 transition-colors font-bold uppercase tracking-wider"
-                    >
-                      {generatingLongDesc ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                      {generatingLongDesc ? 'Writing...' : 'Auto-Write'}
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => handleGenerateAI('long')}
+                        disabled={generatingLongDesc}
+                        className="text-[10px] flex items-center gap-1 text-[#d4af37] hover:text-[#b8941f] disabled:opacity-50 transition-colors font-bold uppercase tracking-wider"
+                      >
+                        {generatingLongDesc ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                        {generatingLongDesc ? 'Writing...' : 'Auto'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveInstructionField(activeInstructionField === 'longDescription' ? null : 'longDescription')}
+                        className={`text-[10px] flex items-center gap-1 transition-colors font-bold uppercase tracking-wider ${activeInstructionField === 'longDescription' ? 'text-blue-500' : 'text-gray-400 hover:text-gray-600'}`}
+                      >
+                        <MessageSquare className="w-3 h-3" />
+                        Guided
+                      </button>
+                    </div>
                   </label>
+                  {activeInstructionField === 'longDescription' && (
+                    <div className="mb-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                      <input 
+                        type="text"
+                        placeholder="e.g., Highlight the 22K gold purity"
+                        value={aiInstructions.longDescription}
+                        onChange={(e) => setAiInstructions({...aiInstructions, longDescription: e.target.value})}
+                        className="w-full px-3 py-1.5 text-xs bg-blue-50/50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/20 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-700 dark:text-gray-300"
+                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleGenerateAI('long'))}
+                      />
+                    </div>
+                  )}
                   <textarea
                     value={formData.longDescription}
                     onChange={(e) => setFormData({ ...formData, longDescription: e.target.value })}

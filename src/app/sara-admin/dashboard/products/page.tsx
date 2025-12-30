@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Plus, Search, Eye, Edit, Trash2, Star, Gift, Loader2, RotateCcw } from 'lucide-react'
+import { Plus, Search, Eye, Edit, Trash2, Star, Gift, Loader2, RotateCcw, Copy, Image as ImageIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
 
@@ -19,6 +19,7 @@ interface Product {
   isNewProduct: boolean
   isFeatured: boolean
   createdAt: string
+  images: { id: string, url: string, type: string }[]
 }
 
 export default function ProductsPage() {
@@ -53,6 +54,47 @@ export default function ProductsPage() {
       }
     } catch (error) {
       toast.error('Failed to fetch products')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDuplicate = async (product: Product) => {
+    try {
+      setLoading(true)
+      // Fetch full product details to ensure we have everything
+      const res = await fetch(`/api/admin/products/${product._id}`)
+      if (!res.ok) throw new Error('Failed to fetch details')
+      const fullProduct = await res.json()
+
+      // Create duplicate data - keep same name, description, etc.
+      const duplicateData = {
+        ...fullProduct,
+        // Keep the same name, description, and all content
+        sku: `${fullProduct.sku}-COPY-${Math.floor(Math.random() * 1000)}`, // Only change SKU for uniqueness
+        status: 'draft',
+        _id: undefined, // Remove ID to create new
+        createdAt: undefined,
+        updatedAt: undefined
+      }
+
+      const response = await fetch('/api/admin/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(duplicateData)
+      })
+
+      if (response.ok) {
+        toast.success('Product duplicated! Check the top of the list.')
+        // Reset to page 1 to see the newly duplicated product at the top
+        setPagination(prev => ({ ...prev, page: 1 }))
+        fetchProducts()
+      } else {
+        const err = await response.json()
+        toast.error(err.error || 'Failed to duplicate product')
+      }
+    } catch (error) {
+      toast.error('Failed to duplicate product')
     } finally {
       setLoading(false)
     }
@@ -130,9 +172,9 @@ export default function ProductsPage() {
           <table className="min-w-full text-sm">
             <thead>
               <tr className="text-left text-gray-500 dark:text-gray-400 bg-gray-50/50 dark:bg-[#2a2a2a]/50">
+                <th className="p-4 font-semibold">Image</th>
                 <th className="p-4 font-semibold">Name</th>
                 <th className="p-4 font-semibold">SKU</th>
-                <th className="p-4 font-semibold">Category</th>
                 <th className="p-4 font-semibold">Tags</th>
                 <th className="p-4 font-semibold">Price</th>
                 <th className="p-4 font-semibold">Stock</th>
@@ -159,9 +201,28 @@ export default function ProductsPage() {
               ) : (
                 products.map((p) => (
                   <tr key={p._id} className="border-t border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-[#2a2a2a]/30 transition-colors">
-                    <td className="p-4 text-gray-900 dark:text-gray-100 font-medium">{p.name}</td>
-                    <td className="p-4 text-gray-700 dark:text-gray-300 font-mono text-xs">{p.sku}</td>
-                    <td className="p-4 text-gray-700 dark:text-gray-300">{p.category}</td>
+                    <td className="p-4">
+                      <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-[#2a2a2a]">
+                        {p.images?.find(img => img.type === 'front')?.url ? (
+                          <img 
+                            src={p.images.find(img => img.type === 'front')?.url} 
+                            alt={p.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-400">
+                            <ImageIcon className="w-5 h-5" />
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="p-4 text-gray-900 dark:text-gray-100 font-medium">
+                      <div className="flex flex-col">
+                        <span>{p.name}</span>
+                        <span className="text-[10px] text-gray-400 uppercase tracking-tighter sm:hidden">{p.sku}</span>
+                      </div>
+                    </td>
+                    <td className="p-4 text-gray-700 dark:text-gray-300 font-mono text-xs hidden sm:table-cell">{p.sku}</td>
                     <td className="p-4">
                       <div className="flex items-center gap-2 flex-wrap">
                         {p.isFeatured && (
@@ -200,6 +261,13 @@ export default function ProductsPage() {
                         >
                           <Eye className="w-4 h-4" />
                         </Link>
+                        <button 
+                          onClick={() => handleDuplicate(p)}
+                          className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors cursor-pointer" 
+                          title="Duplicate"
+                        >
+                          <Copy className="w-4 h-4" />
+                        </button>
                         <Link 
                           href={`/sara-admin/dashboard/products/${p._id}/edit`}
                           className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors cursor-pointer" 

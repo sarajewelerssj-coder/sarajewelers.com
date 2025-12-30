@@ -22,79 +22,79 @@ export async function POST(req: Request) {
 
     let systemPrompt = '';
     let userContent = '';
-    let maxTokens = 1000; // Default max tokens
+    let maxTokens = 1000;
+    const { instructions } = body;
+
+    const toneRule = "\n\nSTRICT RULE: Use very simple, clear English. No complex words. Short sentences only. Avoid 'tough' vocabulary.";
+    const instructionPrompt = instructions ? `\n\nADMIN INSTRUCTIONS: ${instructions}` : "";
 
     if (type === 'template') {
       const { prompt } = body;
-      systemPrompt = `You are an expert email marketing copywriter for a luxury jewelry brand called 'Sara Jewelers'. 
-      Your task is to create a professional, high-converting, and aesthetically pleasing HTML email template based on the Subject provided.
+      systemPrompt = `You are an expert email marketing copywriter for 'Sara Jewelers'. 
+      Create a professional, high-converting HTML email template.
+      ${toneRule}
       
-      3. Return a JSON object with this exact structure:
+      Return a JSON object:
       {
-        "subject": "Refined and improved subject line based on user input",
-        "name": "Short_Internal_Template_Name",
-        "html": "The full HTML code here..."
+        "subject": "Refined subject line",
+        "name": "Internal_Name",
+        "html": "HTML code"
       }
-      4. The design must be responsive, mobile-friendly, and use inline CSS for styling.
-      5. Use a clean, elegant, and premium design suitable for a high-end jewelry brand. Use colors like Gold (#d4af37), Black, White, and subtle Grays.
-      6. Include placeholders exactly as follows where appropriate: {{name}} for customer name, {{companyName}} for 'Sara Jewelers'.
-      7. URL RULES: NEVER use 'example.com'. ALWAYS use 'https://sarajeweler.com'. Use specific paths like '/products', '/collections/new-arrivals', or '/contact'.
-      8. Include a clear Call to Action (CTA) button styled elegantly.
-      9. KEEP IT CONCISE: The email body text should be SHORT and DIRECT. Max 150 words. Focus on visual appeal.
-      
-      Subject Input: "${prompt}"`;
+      - Responsive, inline CSS.
+      - Colors: Gold (#d4af37), Black, White.
+      - Placeholders: {{name}}, {{companyName}}.
+      - URLs: ALWAYS use 'https://sarajewelers.com'.
+      - Concise text: Max 150 words.
+      ${instructionPrompt}`;
       
       userContent = `Generate a JSON object containing a refined subject, internal name, and HTML template for: "${prompt}"`;
       maxTokens = 1500;
     } else if (type === 'variations') {
-      systemPrompt = `You are an expert luxury jewelry consultant. Given a product name and categories, suggest logically relevant variations (e.g., Ring Size, Metal Type, Polish, Diamond Quality).
-      Return ONLY a JSON object with this exact structure:
+      systemPrompt = `Suggest logically relevant variations for jewelry (e.g., Ring Size, Metal Type).
+      ${toneRule}
+      Return ONLY a JSON object:
       {
         "variations": [
-          { "title": "Size", "values": [{ "value": "6", "price": 0 }, { "value": "7", "price": 0 }] },
-          { "title": "Material", "values": [{ "value": "22K Gold", "price": 0 }, { "value": "Platinum", "price": 500 }] }
+          { "title": "Size", "values": [{ "value": "6", "price": 0 }, { "value": "7", "price": 0 }] }
         ]
-      }`;
+      }
+      ${instructionPrompt}`;
       userContent = `Suggest variations for a jewelry piece named "${productName}" in categories: ${categories ? categories.join(', ') : 'Jewelry'}.`;
       maxTokens = 800;
     } else if (type === 'pricing') {
-      systemPrompt = `You are a jewelry market analyst. Given a product name and categories, suggest a realistic selling price, market price (old price), and initial stock level.
-      Return ONLY a JSON object with this exact structure:
+      systemPrompt = `Suggest realistic selling price, old price, and stock.
+      ${toneRule}
+      Return ONLY JSON:
       {
         "price": "1250.00",
         "oldPrice": "1500.00",
         "stock": "10"
       }
-      Rules:
-      1. Prices should be realistic for luxury jewelry (e.g., Gold rings $500-$3000, Diamond sets $2000+).
-      2. 'oldPrice' should be 15-30% higher than 'price'.
-      3. Stock should be low (5-20) to create scarcity.`;
-      
+      ${instructionPrompt}`;
       userContent = `Suggest pricing and stock for "${productName}" (Categories: ${categories ? categories.join(', ') : 'Jewelry'}).`;
       maxTokens = 500;
     } else if (type === 'specifications') {
-      systemPrompt = `You are an expert jewelry gemologist. Given a product name and categories, suggest realistic technical specifications (e.g., Material, Weight in grams, Purity, Gemstone, Dimension).
-      Return ONLY a JSON object with this exact structure:
+      systemPrompt = `Suggest realistic technical specifications (e.g., Material, Purity, Gemstone).
+      ${toneRule}
+      Return ONLY JSON:
       {
         "specifications": [
-          { "title": "Material", "value": "22K Gold", "type": "string" },
-          { "title": "Weight (g)", "value": "5.5", "type": "number" }
+          { "title": "Material", "value": "22K Gold", "type": "string" }
         ]
-      }`;
+      }
+      ${instructionPrompt}`;
       userContent = `Suggest technical specifications for a jewelry piece named "${productName}" in categories: ${categories ? categories.join(', ') : 'Jewelry'}.`;
       maxTokens = 800;
     } else {
       const { productName, categories, keywords } = body;
       const isShort = type === 'short';
       const lengthInstruction = isShort 
-        ? "Keep it extremely concise. Maximum 150 characters. 1-2 punchy sentences maximum." 
-        : "Write a concise but detailed description. Maximum 100 words. Focus on impact over length.";
+        ? "Write 2-3 sentences. Around 200-250 characters. Make it punchy but complete." 
+        : "Write a detailed description. 150-200 words. Cover key features, benefits, and what makes it special.";
 
-      systemPrompt = `You are an expert luxury jewelry copywriter. Your tone is elegant, sophisticated, and persuasive.
-      You are writing for 'Sara Jewelers', a high-end brand.
-      Avoid generic adjectives. Use sensory words.
-      Do NOT wrap the output in quotes.
-      STRICTLY follow the length constraints provided.`;
+      systemPrompt = `You are a jewelry copywriter. Tone: Simple and persuasive.
+      ${toneRule}
+      ${instructionPrompt}`;
       
       userContent = `Write a ${isShort ? 'short' : 'long'} product description for a jewelry piece named "${productName}".
       Categories: ${categories ? categories.join(', ') : 'Jewelry'}
@@ -102,7 +102,7 @@ export async function POST(req: Request) {
       
       ${lengthInstruction}`;
       
-      maxTokens = isShort ? 120 : 350;
+      maxTokens = isShort ? 200 : 500;
     }
 
     const response = await client.chat.completions.create({
