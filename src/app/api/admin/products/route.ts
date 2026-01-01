@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { connectDB } from '@/lib/mongodb'
 import Product from '@/models/Product'
+import { ensureUniqueSlug } from '@/lib/slug-utils'
 
 export async function GET(request: NextRequest) {
   try {
@@ -58,9 +59,15 @@ export async function POST(request: NextRequest) {
     const data = await request.json()
     console.log('DEBUG: Received product data for creation:', JSON.stringify(data, null, 2))
     
-    // Generate slug if not provided
-    if (!data.slug && data.name) {
-      data.slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+    // Generate slug if not provided, or ensure validity if it is
+    let slug = data.slug
+    if (!slug && data.name) {
+      slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+    }
+    
+    // Ensure slug is unique
+    if (slug) {
+      data.slug = await ensureUniqueSlug(Product, slug)
     }
 
     // Note: We do NOT auto-calculate prices anymore - admin has full control

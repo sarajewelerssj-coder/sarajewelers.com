@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { connectDB } from '@/lib/mongodb'
 import Product from '@/models/Product'
 import { deleteFromCloudinary } from '@/lib/cloudinary'
+import { ensureUniqueSlug } from '@/lib/slug-utils'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -31,8 +32,17 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     console.log(`DEBUG: Received product update for ID ${id}:`, JSON.stringify(data, null, 2))
     
     // Generate slug if name changed
-    if (data.name && !data.slug) {
-      data.slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+    // Generate slug if name changed or slug provided
+    if (data.name || data.slug) {
+      let slug = data.slug
+      if (!slug && data.name) {
+        slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+      }
+      
+      // Ensure slug is unique, excluding current product ID
+      if (slug) {
+        data.slug = await ensureUniqueSlug(Product, slug, id)
+      }
     }
 
     // Note: We do NOT auto-calculate prices - admin has full control
