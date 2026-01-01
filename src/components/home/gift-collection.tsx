@@ -199,8 +199,14 @@ export default function GiftCollection() {
                 {(() => {
                   // Find front and back images by type
                   const frontImage = product.images?.find((img: any) => img.type === 'front')?.url || product.images?.[0]?.url || product.images?.[0] || '/placeholder.svg'
-                  const backImage = product.images?.find((img: any) => img.type === 'back')?.url || null
                   
+                  // Try to find a back image, then gallery, then just the second image in the array
+                  const backImage = 
+                    product.images?.find((img: any) => img.type === 'back')?.url || 
+                    product.images?.find((img: any) => img.type === 'gallery')?.url || 
+                    (product.images?.[1]?.url ? product.images[1].url : product.images?.[1]) ||
+                    null
+
                   return (
                     <>
                       {/* Primary Image (Front) */}
@@ -208,7 +214,7 @@ export default function GiftCollection() {
                         src={frontImage}
                         alt={product.name}
                         fill
-                        className="object-cover transition-opacity duration-300 group-hover:opacity-0"
+                        className={`object-cover transition-opacity duration-300 ${backImage ? 'group-hover:opacity-0' : ''}`}
                       />
                       
                       {/* Secondary Image (Back - shown on hover) */}
