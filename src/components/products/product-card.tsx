@@ -113,6 +113,38 @@ export default function ProductCard({ product }: ProductCardProps) {
     }
   }
 
+  // Calculate display price
+  const displayPrice = (() => {
+    // If base price is 0 and we have variations, try to find the lowest price from variations
+    if (product.price === 0 && product.variations) {
+      let minPrice = Infinity
+      let hasPricedVariations = false
+
+      Object.values(product.variations).forEach((varType: any) => {
+        if (Array.isArray(varType)) {
+          varType.forEach((option: any) => {
+            if (typeof option === 'object' && typeof option.price === 'number') {
+              if (option.price > 0 && option.price < minPrice) {
+                minPrice = option.price
+                hasPricedVariations = true
+              }
+            }
+          })
+        }
+      })
+
+      if (hasPricedVariations && minPrice !== Infinity) {
+        return minPrice
+      }
+    }
+    return product.price
+  })()
+
+  // Helper to format price
+  const formatPrice = (price: number) => {
+     return price.toFixed(2)
+  }
+
   return (
     <div
       className="group relative bg-white dark:bg-[#1e1e1e] rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-[#d4af37]/20 dark:hover:shadow-[#f4d03f]/20 transition-all duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-800 hover:border-[#d4af37]/40 dark:hover:border-[#f4d03f]/40"
@@ -193,7 +225,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="flex items-center justify-between mt-2 sm:mt-3">
           <div className="flex items-center gap-1 sm:gap-2">
             <span className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 group-hover:text-[#d4af37] dark:group-hover:text-[#f4d03f] transition-colors duration-300">
-              ${product.price.toFixed(2)}
+              ${formatPrice(displayPrice)}
             </span>
             {product.oldPrice && (
               <span className="text-xs sm:text-sm text-gray-400 dark:text-gray-500 line-through">

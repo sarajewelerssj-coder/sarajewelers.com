@@ -129,7 +129,7 @@ SETUP_TOKEN=your_secure_random_token_here
 
 ```bash
 # Clone the repository
-git clone this repo
+git clone clone this repo
 
 # Install dependencies
 npm install

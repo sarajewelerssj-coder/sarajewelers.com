@@ -236,7 +236,28 @@ export default function GiftCollection() {
                 <h3 className="font-medium text-sm sm:text-base text-gray-900 dark:text-white group-hover:text-[#d4af37] dark:group-hover:text-[#f4d03f] transition-colors mb-1 sm:mb-2 leading-tight">
                   {product.name}
                 </h3>
-                <p className="font-bold text-[#d4af37] dark:text-[#f4d03f] text-sm sm:text-base md:text-lg">${product.price.toFixed(2)}</p>
+                <p className="font-bold text-[#d4af37] dark:text-[#f4d03f] text-sm sm:text-base md:text-lg">
+                  ${(() => {
+                    if (product.price === 0 && product.variations) {
+                      let minPrice = Infinity
+                      let hasPricedVariations = false
+                      Object.values(product.variations).forEach((varType: any) => {
+                        if (Array.isArray(varType)) {
+                          varType.forEach((option: any) => {
+                            if (typeof option === 'object' && typeof option.price === 'number') {
+                              if (option.price > 0 && option.price < minPrice) {
+                                minPrice = option.price
+                                hasPricedVariations = true
+                              }
+                            }
+                          })
+                        }
+                      })
+                      if (hasPricedVariations && minPrice !== Infinity) return minPrice.toFixed(2)
+                    }
+                    return product.price.toFixed(2)
+                  })()}
+                </p>
               </div>
             </Link>
           ))}
