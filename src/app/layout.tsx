@@ -17,8 +17,8 @@ const cormorant = Cormorant_Garamond({
 
 export const metadata: Metadata = {
   title: "Sara Jewelers | Fine Diamond Jewelry & Custom Designs Hamilton NJ",
-  description: "Discover exquisite diamond engagement rings, gold jewelry & custom designs at Sara Jewelers. Expert craftsmanship in Hamilton Mall. Shop luxury collections.",
-  keywords: ["diamond jewelry", "custom rings", "gold jewelry", "engagement rings", "Hamilton NJ", "Sara Jewelers", "wedding bands", "jewelry store"],
+  description: "Discover exquisite diamond engagement rings, Sara Gold jewelry & custom designs at Sara Jewelers. Expert craftsmanship in Hamilton Mall. Shop luxury collections.",
+  keywords: ["sara gold", "diamond jewelry", "custom rings", "gold jewelry", "engagement rings", "Hamilton NJ", "Sara Jewelers", "wedding bands", "jewelry store"],
   authors: [{ name: "Sara Jewelers" }],
   creator: "Sara Jewelers",
   publisher: "Sara Jewelers",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Sara Jewelers | Fine Diamond Jewelry & Custom Designs",
-    description: "Discover exquisite diamond engagement rings and custom jewelry designs. Quality craftsmanship and certified stones.",
+    description: "Discover exquisite Sara Gold jewelry, diamond engagement rings and custom jewelry designs. Quality craftsmanship and certified stones.",
     url: 'https://www.sarajeweler.com',
     siteName: 'Sara Jewelers',
     images: [
