@@ -13,6 +13,6 @@ export default function robots(): MetadataRoute.Robots {
         '/wishlist',
       ],
     },
-    sitemap: 'https://sarajeweler.com/sitemap.xml',
+    sitemap: 'https://www.sarajeweler.com/sitemap.xml',
   }
 }
