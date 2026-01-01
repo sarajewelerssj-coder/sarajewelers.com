@@ -634,6 +634,13 @@ function AccountContent() {
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <h5 className="font-bold text-sm text-gray-900 dark:text-gray-100 truncate">{item.name}</h5>
+                                    <div className="flex flex-wrap gap-1 mb-1">
+                                      {item.selectedVariations && Object.entries(item.selectedVariations).map(([key, value]) => (
+                                        <span key={key} className="text-[10px] text-gray-400">
+                                          {key}: {value as string}{" "}
+                                        </span>
+                                      ))}
+                                    </div>
                                     <p className="text-xs text-gray-500">Qty: {item.quantity} × ${item.price.toFixed(2)}</p>
                                   </div>
                                   <div className="text-right">

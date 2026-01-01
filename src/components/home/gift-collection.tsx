@@ -1,12 +1,14 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Loader2, Gift } from "lucide-react"
+import { Loader2, Gift, Heart, ShoppingCart, Eye } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { calculateDisplayPrice } from "@/lib/product-utils"
+import { toast } from "sonner"
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger)
@@ -121,6 +123,92 @@ export default function GiftCollection() {
     }
   }, [])
 
+  const addToCart = (e: React.MouseEvent, product: any) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const existingCart = JSON.parse(localStorage.getItem('cart') || '[]')
+    const existingItemIndex = existingCart.findIndex((item: any) => item.id === product.id)
+
+    if (existingItemIndex >= 0) {
+      existingCart[existingItemIndex].quantity += 1
+    } else {
+      const selectedVariations: Record<string, string> = {}
+      let totalPrice = product.price || 0
+
+      if (product.variations) {
+        Object.entries(product.variations).forEach(([title, values]) => {
+          if (Array.isArray(values) && values.length > 0) {
+            let bestOption = values[0]
+            let minVarPrice = typeof bestOption === 'object' ? (bestOption.price || 0) : 0
+            
+            if (typeof bestOption === 'object') {
+              values.forEach((val: any) => {
+                if (typeof val === 'object') {
+                  const p = val.price || 0
+                  if (p < minVarPrice) {
+                    minVarPrice = p
+                    bestOption = val
+                  }
+                }
+              })
+            }
+
+            const varValue = typeof bestOption === 'string' ? bestOption : bestOption.value
+            selectedVariations[title] = varValue
+            totalPrice += minVarPrice
+          }
+        })
+      }
+
+      existingCart.push({
+        id: product.id,
+        name: product.name,
+        price: totalPrice,
+        image: product.images?.[0]?.url || product.images?.[0] || '/placeholder.svg',
+        slug: product.slug,
+        quantity: 1,
+        selectedVariations
+      })
+    }
+
+    localStorage.setItem('cart', JSON.stringify(existingCart))
+    window.dispatchEvent(new Event('cartUpdated'))
+
+    toast.success('Added to cart', {
+      description: `${product.name} has been added to your cart`,
+      duration: 3000,
+    })
+  }
+
+  const addToWishlist = (e: React.MouseEvent, product: any) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const existingWishlist = JSON.parse(localStorage.getItem('wishlist') || '[]')
+    const existingItemIndex = existingWishlist.findIndex((item: any) => item.id === product.id)
+
+    if (existingItemIndex < 0) {
+      existingWishlist.push({
+        id: product.id,
+        name: product.name,
+        price: calculateDisplayPrice(product.price || 0, product.variations),
+        image: product.images?.[0]?.url || product.images?.[0] || '/placeholder.svg',
+        slug: product.slug,
+      })
+
+      localStorage.setItem('wishlist', JSON.stringify(existingWishlist))
+      window.dispatchEvent(new Event('wishlistUpdated'))
+
+      toast.success('Added to wishlist', {
+        description: `${product.name} has been added to your wishlist`,
+        duration: 3000,
+      })
+    } else {
+      toast.info('Already in wishlist')
+    }
+  }
+
   if (loading) {
     return (
       <section className="py-20 bg-white dark:bg-[#1e1e1e]">
@@ -192,7 +280,7 @@ export default function GiftCollection() {
             <Link
               key={product.id}
               ref={(el) => { productRefs.current[index] = el }}
-              href={`/products/${product.id}`}
+              href={`/products/${product.slug || product.id}`}
               className="group bg-white dark:bg-[#1e1e1e] rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-[#d4af37]/20 dark:hover:shadow-[#f4d03f]/20 transition-all duration-500 hover:-translate-y-2 border border-gray-100 dark:border-gray-800 hover:border-[#d4af37]/40 dark:hover:border-[#f4d03f]/40"
             >
               <div className="aspect-square relative overflow-hidden">
@@ -231,32 +319,37 @@ export default function GiftCollection() {
                 })()}
                 
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+
+                {/* Quick Actions Overlay (Mirroring ProductCard) */}
+                <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                  <button
+                    className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-[#d4af37] hover:text-white dark:hover:bg-[#f4d03f] dark:hover:text-black transition-colors duration-200 text-gray-700 dark:text-gray-300 cursor-pointer"
+                    onClick={(e) => addToWishlist(e, product)}
+                    title="Add to Wishlist"
+                  >
+                    <Heart size={16} />
+                  </button>
+                  <button
+                    className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-[#d4af37] hover:text-white dark:hover:bg-[#f4d03f] dark:hover:text-black transition-colors duration-200 text-gray-700 dark:text-gray-300 cursor-pointer"
+                    onClick={(e) => addToCart(e, product)}
+                    title="Add to Cart"
+                  >
+                    <ShoppingCart size={16} />
+                  </button>
+                  <div
+                    className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm p-2 rounded-full shadow-md hover:bg-[#d4af37] hover:text-white dark:hover:bg-[#f4d03f] dark:hover:text-black transition-colors duration-200 text-gray-700 dark:text-gray-300 cursor-pointer"
+                    title="View Details"
+                  >
+                    <Eye size={16} />
+                  </div>
+                </div>
               </div>
               <div className="p-3 sm:p-4 md:p-6">
                 <h3 className="font-medium text-sm sm:text-base text-gray-900 dark:text-white group-hover:text-[#d4af37] dark:group-hover:text-[#f4d03f] transition-colors mb-1 sm:mb-2 leading-tight">
                   {product.name}
                 </h3>
                 <p className="font-bold text-[#d4af37] dark:text-[#f4d03f] text-sm sm:text-base md:text-lg">
-                  ${(() => {
-                    if (product.price === 0 && product.variations) {
-                      let minPrice = Infinity
-                      let hasPricedVariations = false
-                      Object.values(product.variations).forEach((varType: any) => {
-                        if (Array.isArray(varType)) {
-                          varType.forEach((option: any) => {
-                            if (typeof option === 'object' && typeof option.price === 'number') {
-                              if (option.price > 0 && option.price < minPrice) {
-                                minPrice = option.price
-                                hasPricedVariations = true
-                              }
-                            }
-                          })
-                        }
-                      })
-                      if (hasPricedVariations && minPrice !== Infinity) return minPrice.toFixed(2)
-                    }
-                    return product.price.toFixed(2)
-                  })()}
+                  ${calculateDisplayPrice(product.price || 0, product.variations).toFixed(2)}
                 </p>
               </div>
             </Link>

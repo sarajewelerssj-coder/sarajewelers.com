@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import NewsletterSection from "@/components/layout/newsletter-section"
 import FilterBar from "@/components/products/product-filters"
+import { calculateDisplayPrice } from "@/lib/product-utils"
 
 export default function SearchPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -136,7 +137,7 @@ export default function SearchPage() {
       existingCart.push({
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: calculateDisplayPrice(product.price, product.variations),
         image: (() => {
           if (Array.isArray(product.images)) {
             const front = product.images.find((img: any) => img.type === 'front')
@@ -170,7 +171,7 @@ export default function SearchPage() {
       existingWishlist.push({
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: calculateDisplayPrice(product.price, product.variations),
         image: (() => {
           if (Array.isArray(product.images)) {
             const front = product.images.find((img: any) => img.type === 'front')
@@ -386,7 +387,7 @@ export default function SearchPage() {
 
                         <div className="flex items-center justify-between mt-2 sm:mt-3">
                           <div className="flex items-center gap-1 sm:gap-2">
-                            <span className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 group-hover:text-[#d4af37] dark:group-hover:text-[#f4d03f] transition-colors duration-300">${product.price.toFixed(2)}</span>
+                            <span className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 group-hover:text-[#d4af37] dark:group-hover:text-[#f4d03f] transition-colors duration-300">${calculateDisplayPrice(product.price, product.variations).toFixed(2)}</span>
                             {product.oldPrice && (
                               <span className="text-xs sm:text-sm text-gray-400 dark:text-gray-500 line-through">
                                 ${product.oldPrice.toFixed(2)}

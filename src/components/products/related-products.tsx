@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Heart, ShoppingCart, Eye, ChevronLeft, ChevronRight } from "lucide-react"
+import { calculateDisplayPrice } from "@/lib/product-utils"
 
 interface RelatedProductsProps {
   currentProductId: string
@@ -179,7 +180,7 @@ export default function RelatedProducts({ currentProductId, category }: RelatedP
 
               <div className="flex items-center justify-between mt-2">
                 <div className="flex items-center">
-                  <span className="font-semibold text-[#333333] dark:text-[#f5f5f5]">${product.price.toFixed(2)}</span>
+                  <span className="font-semibold text-[#333333] dark:text-[#f5f5f5]">${calculateDisplayPrice(product.price, product.variations).toFixed(2)}</span>
                   {product.oldPrice && (
                     <span className="ml-2 text-sm text-[#777777] dark:text-[#aaaaaa] line-through">
                       ${product.oldPrice.toFixed(2)}

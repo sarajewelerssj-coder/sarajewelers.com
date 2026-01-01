@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { Package, Gift, Search, Plus, X, Star, Tags, RefreshCw, Save, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import Image from 'next/image'
+import { calculateDisplayPrice } from '@/lib/product-utils'
 
 interface Category {
   _id: string
@@ -408,7 +409,7 @@ export default function CollectionsPage() {
                         <p className="font-bold text-lg truncate mb-1">{product.productName}</p>
                         <div className="flex items-center justify-between">
                           <span className="text-xs text-white/70 font-mono tracking-tighter">{product.sku}</span>
-                          <span className="text-sm font-bold text-[#d4af37] bg-black/50 px-2 py-0.5 rounded-full backdrop-blur-sm">${product.price.toFixed(2)}</span>
+                          <span className="text-sm font-bold text-[#d4af37] bg-black/50 px-2 py-0.5 rounded-full backdrop-blur-sm">${calculateDisplayPrice(product.price, (products.find(p => p._id === product.productId) as any)?.variations).toFixed(2)}</span>
                         </div>
                       </div>
                       
@@ -530,7 +531,7 @@ export default function CollectionsPage() {
                             <p className="font-bold text-lg truncate mb-1">{product.name}</p>
                             <div className="flex items-center justify-between">
                               <span className="text-xs text-white/70 font-mono tracking-tighter">{product.sku}</span>
-                              <span className="text-sm font-bold text-[#d4af37] bg-black/50 px-2 py-0.5 rounded-full backdrop-blur-sm">${product.price.toFixed(2)}</span>
+                              <span className="text-sm font-bold text-[#d4af37] bg-black/50 px-2 py-0.5 rounded-full backdrop-blur-sm">${calculateDisplayPrice(product.price, (product as any).variations).toFixed(2)}</span>
                             </div>
                           </div>
                           

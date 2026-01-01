@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Search, Heart, ShoppingCart, User, LogOut, Home, Grid, Phone, Diamond, ChevronDown, Package, LogIn } from "lucide-react"
 import { gsap } from "gsap"
+import { calculateDisplayPrice } from "@/lib/product-utils"
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin()
@@ -333,7 +334,7 @@ export default function Header() {
                         <h3 className="text-sm font-serif italic font-bold text-[#333333] dark:text-[#f5f5f5] tracking-tight" style={{ fontFamily: 'var(--font-serif)' }}>{product.name}</h3>
                         <p className="text-xs text-[#777777] dark:text-[#aaaaaa]">{product.category}</p>
                       </div>
-                      <div className="ms-auto text-sm font-medium text-[#d4af37]">${product.price.toFixed(2)}</div>
+                      <div className="ms-auto text-sm font-medium text-[#d4af37]">${calculateDisplayPrice(product.price, product.variations).toFixed(2)}</div>
                     </div>
                   ))}
 

@@ -29,15 +29,15 @@ export async function GET(request: NextRequest) {
         return {
           id: fullProd._id.toString(),
           name: fullProd.name,
+          slug: fullProd.slug,
           price: fullProd.price,
           oldPrice: fullProd.oldPrice,
           discount: fullProd.discount,
           rating: fullProd.rating || 0,
           reviewCount: fullProd.reviewCount || 0,
           isNew: fullProd.isNewProduct || false,
-          images: fullProd.images && fullProd.images.length > 0
-            ? fullProd.images.map((img: any) => img.url)
-            : ["/placeholder.svg"],
+          images: fullProd.images || ["/placeholder.svg"],
+          variations: fullProd.variations || {},
           category: fullProd.categories?.[0] || 'Uncategorized'
         }
       }).filter(Boolean)

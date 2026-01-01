@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Heart, ShoppingCart, Eye } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { calculateDisplayPrice } from '@/lib/product-utils'
 
 interface ProductCardProps {
   product: {
@@ -63,14 +64,42 @@ export default function ProductCard({ product }: ProductCardProps) {
     if (existingItemIndex >= 0) {
       existingCart[existingItemIndex].quantity += 1
     } else {
+      const selectedVariations: Record<string, string> = {}
+      let totalPrice = product.price || 0
+
+      if (product.variations) {
+        Object.entries(product.variations).forEach(([title, values]) => {
+          if (Array.isArray(values) && values.length > 0) {
+            // Find variation with lowest price (matching detail page logic)
+            let bestOption = values[0]
+            let minVarPrice = typeof bestOption === 'object' ? (bestOption.price || 0) : 0
+            
+            if (typeof bestOption === 'object') {
+              values.forEach((val: any) => {
+                if (typeof val === 'object') {
+                  const p = val.price || 0
+                  if (p < minVarPrice) {
+                    minVarPrice = p
+                    bestOption = val
+                  }
+                }
+              })
+            }
+
+            const varValue = typeof bestOption === 'string' ? bestOption : bestOption.value
+            selectedVariations[title] = varValue
+            totalPrice += minVarPrice
+          }
+        })
+      }
+
       existingCart.push({
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: totalPrice,
         image: mainImage,
         quantity: 1,
-        selectedSize: product.variations?.sizes?.[0] || '',
-        selectedColor: product.variations?.colors?.[0] || '',
+        selectedVariations
       })
     }
 
@@ -94,7 +123,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       existingWishlist.push({
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: displayPrice,
         image: mainImage,
       })
 
@@ -114,31 +143,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   }
 
   // Calculate display price
-  const displayPrice = (() => {
-    // If base price is 0 and we have variations, try to find the lowest price from variations
-    if (product.price === 0 && product.variations) {
-      let minPrice = Infinity
-      let hasPricedVariations = false
-
-      Object.values(product.variations).forEach((varType: any) => {
-        if (Array.isArray(varType)) {
-          varType.forEach((option: any) => {
-            if (typeof option === 'object' && typeof option.price === 'number') {
-              if (option.price > 0 && option.price < minPrice) {
-                minPrice = option.price
-                hasPricedVariations = true
-              }
-            }
-          })
-        }
-      })
-
-      if (hasPricedVariations && minPrice !== Infinity) {
-        return minPrice
-      }
-    }
-    return product.price
-  })()
+  const displayPrice = calculateDisplayPrice(product.price, product.variations)
 
   // Helper to format price
   const formatPrice = (price: number) => {

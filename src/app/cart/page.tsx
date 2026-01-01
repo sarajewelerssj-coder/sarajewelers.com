@@ -21,6 +21,7 @@ interface CartItem {
   image?: string
   slug: string
   quantity: number
+  selectedVariations?: Record<string, string>
 }
 
 export default function CartPage() {
@@ -500,16 +501,18 @@ export default function CartPage() {
                       </div>
                       <div className="ms-4 flex-1">
                         <h4 className="font-medium text-[#333333] dark:text-[#f5f5f5]">{item.name}</h4>
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-xs text-[#777777] dark:text-[#aaaaaa] mt-1">Qty: {item.quantity}</p>
-                          </div>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {item.selectedVariations && Object.entries(item.selectedVariations).map(([key, value]) => (
+                            <span key={key} className="text-[10px] px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-gray-500">
+                              {key}: {value}
+                            </span>
+                          ))}
+                        </div>
                           <p className="font-medium text-[#333333] dark:text-[#f5f5f5]">
                             ${(item.price * item.quantity).toFixed(2)}
                           </p>
                         </div>
                       </div>
-                    </div>
                   ))}
                 </div>
               </div>
@@ -597,6 +600,13 @@ export default function CartPage() {
                                 {item.name}
                               </h3>
                             </Link>
+                            <div className="flex flex-wrap gap-2 mt-1 mb-2">
+                              {item.selectedVariations && Object.entries(item.selectedVariations).map(([key, value]) => (
+                                <span key={key} className="text-[10px] px-2 py-0.5 bg-[#d4af37]/10 text-[#d4af37] border border-[#d4af37]/20 rounded transition-all">
+                                  {key}: {value}
+                                </span>
+                              ))}
+                            </div>
                             <div className="md:hidden mt-1 text-sm font-bold text-[#d4af37] dark:text-[#f4d03f]">
                               ${item.price.toFixed(2)}
                             </div>

@@ -248,6 +248,7 @@ export default function ProductPage() {
         })(),
         slug: product.slug,
         quantity,
+        selectedVariations,
       })
     }
 

@@ -172,8 +172,11 @@ export default function OrderDetailPage() {
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-gray-900 dark:text-gray-100 truncate">{item.name}</h4>
                     <div className="flex flex-wrap gap-2 mt-1">
-                      {item.selectedSize && <span className="text-[10px] px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-gray-500">Size: {item.selectedSize}</span>}
-                      {item.selectedColor && <span className="text-[10px] px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-gray-500">Color: {item.selectedColor}</span>}
+                      {item.selectedVariations && Object.entries(item.selectedVariations).map(([key, value]) => (
+                        <span key={key} className="text-[10px] px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-gray-500">
+                          {key}: {value as string}
+                        </span>
+                      ))}
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{item.quantity} × ${item.price.toFixed(2)}</p>
                   </div>

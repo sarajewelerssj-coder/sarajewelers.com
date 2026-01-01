@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Search, AlertTriangle, Edit2, Save, X, Loader2, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
+import { calculateDisplayPrice } from '@/lib/product-utils'
 
 export default function InventoryPage() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -288,7 +289,7 @@ export default function InventoryPage() {
                           </div>
                         ) : (
                           <div className="flex flex-col">
-                            <span className="font-bold text-gray-900 dark:text-white">${item.price}</span>
+                            <span className="font-bold text-gray-900 dark:text-white">${calculateDisplayPrice(item.price, (products.find(p => p._id === item.id) as any)?.variations)}</span>
                             {item.oldPrice > 0 && (
                               <span className="text-xs text-gray-400 line-through">${item.oldPrice}</span>
                             )}

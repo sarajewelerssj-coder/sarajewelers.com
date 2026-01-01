@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import NewsletterSection from "@/components/layout/newsletter-section"
 import { useSearchParams } from "next/navigation"
 import { Suspense } from "react"
+import { calculateDisplayPrice } from "@/lib/product-utils"
 
 export default function AllProductsPage() {
   return (
@@ -152,7 +153,7 @@ function ProductsContent() {
       existingCart.push({
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: calculateDisplayPrice(product.price, product.variations),
         image: frontImage,
         quantity: 1,
         selectedSize: product.variations?.sizes?.[0] || "",
@@ -177,7 +178,7 @@ function ProductsContent() {
       existingWishlist.push({
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: calculateDisplayPrice(product.price, product.variations),
         image: frontImage,
       })
       localStorage.setItem("wishlist", JSON.stringify(existingWishlist))
@@ -337,7 +338,7 @@ function ProductsContent() {
 
                   <div className="flex items-center justify-between mt-2 sm:mt-3">
                     <div className="flex items-center gap-1 sm:gap-2">
-                      <span className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 group-hover:text-[#d4af37] dark:group-hover:text-[#f4d03f] transition-colors duration-300">${product.price.toFixed(2)}</span>
+                      <span className="font-semibold text-sm sm:text-base text-gray-900 dark:text-gray-100 group-hover:text-[#d4af37] dark:group-hover:text-[#f4d03f] transition-colors duration-300">${calculateDisplayPrice(product.price, product.variations).toFixed(2)}</span>
                       {product.oldPrice && (
                         <span className="text-xs sm:text-sm text-gray-400 dark:text-gray-500 line-through">
                           ${product.oldPrice.toFixed(2)}

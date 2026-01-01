@@ -27,6 +27,7 @@ export const OrderSchema = z.object({
     price: z.number(),
     quantity: z.number().min(1),
     image: z.string().optional(),
+    selectedVariations: z.record(z.string(), z.string()).optional(),
   })).min(1, "Cart cannot be empty"),
   subtotal: z.number().min(0),
   paymentScreenshot: z.string().url("Valid payment screenshot URL is required"),

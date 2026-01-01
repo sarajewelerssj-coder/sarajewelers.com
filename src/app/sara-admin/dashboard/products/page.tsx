@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Plus, Search, Eye, Edit, Trash2, Star, Gift, Loader2, RotateCcw, Copy, Image as ImageIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import { calculateDisplayPrice } from '@/lib/product-utils'
 
 interface Product {
   _id: string
@@ -245,7 +246,7 @@ export default function ProductsPage() {
                         )}
                       </div>
                     </td>
-                    <td className="p-4 text-gray-900 dark:text-gray-100 font-semibold">${p.price.toFixed(2)}</td>
+                    <td className="p-4 text-gray-900 dark:text-gray-100 font-semibold">${calculateDisplayPrice(p.price, (p as any).variations).toFixed(2)}</td>
                     <td className="p-4">
                       <span className={`px-2 py-1 rounded-lg text-xs font-semibold ${p.stock > 10 ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' : p.stock > 0 ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400' : 'bg-red-500/15 text-red-600 dark:text-red-400'}`}>
                         {p.stock}

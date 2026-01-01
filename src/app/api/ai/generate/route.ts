@@ -50,8 +50,20 @@ export async function POST(req: Request) {
       userContent = `Generate a JSON object containing a refined subject, internal name, and HTML template for: "${prompt}"`;
       maxTokens = 1500;
     } else if (type === 'variations') {
-      systemPrompt = `Suggest logically relevant variations for jewelry (e.g., Ring Size, Metal Type).
+      systemPrompt = `You are an expert jewelry inventory assistant. 
+      Task: Suggest variations for jewelry (e.g., Ring Size, Metal Type).
       ${toneRule}
+      
+      PRECISION RULES:
+      1. BE TO THE POINT: Only suggest variations that are highly relevant to the product.
+      2. NO EXTRA FLUFF: Do not add unnecessary or redundant variation types.
+      3. STRICT INSTRUCTION COMPLIANCE: If ADMIN INSTRUCTIONS provide specific values or types, use them EXACTLY.
+      
+      RULES FOR PRICES:
+      1. ONLY add prices if they are explicitly mentioned in the ADMIN INSTRUCTIONS.
+      2. Default to "price": 0 if no prices are specified in instructions.
+      3. NEVER hallucinate or guess prices. No extra pricing logic.
+      
       Return ONLY a JSON object:
       {
         "variations": [
@@ -74,8 +86,15 @@ export async function POST(req: Request) {
       userContent = `Suggest pricing and stock for "${productName}" (Categories: ${categories ? categories.join(', ') : 'Jewelry'}).`;
       maxTokens = 500;
     } else if (type === 'specifications') {
-      systemPrompt = `Suggest realistic technical specifications (e.g., Material, Purity, Gemstone).
+      systemPrompt = `You are a technical jewelry specialist. 
+      Task: Suggest precise specifications (e.g., Material, Purity, Gemstone).
       ${toneRule}
+      
+      PRECISION RULES:
+      1. TO THE POINT: Provide concise, accurate technical details. No conversational filler.
+      2. STRICT INSTRUCTION COMPLIANCE: If ADMIN INSTRUCTIONS specify materials (e.g., "10K Gold"), YOU MUST USE THEM EXACTLY. DO NOT substitute with general suggestions like "22K Gold".
+      3. PRIORITIZE KEYWORDS: Use provided keywords to focus the specifications.
+      
       Return ONLY JSON:
       {
         "specifications": [

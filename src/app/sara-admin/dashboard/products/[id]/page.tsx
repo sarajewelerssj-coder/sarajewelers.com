@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Edit, Trash2, EyeOff, Star } from 'lucide-react'
 import { toast } from 'sonner'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import { calculateDisplayPrice } from '@/lib/product-utils'
 
 export default function ProductViewPage() {
   const params = useParams()
@@ -239,7 +240,7 @@ export default function ProductViewPage() {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-400">Price:</span>
-                <span className="font-bold text-xl text-gray-900 dark:text-gray-100">${product.price?.toFixed(2)}</span>
+                <span className="font-bold text-xl text-gray-900 dark:text-gray-100">${calculateDisplayPrice(product.price, product.variations).toFixed(2)}</span>
               </div>
               {product.oldPrice && (
                 <div className="flex justify-between">
