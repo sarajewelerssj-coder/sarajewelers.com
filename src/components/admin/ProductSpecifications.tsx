@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, X, Sparkles } from 'lucide-react'
+import { Plus, X, Sparkles, MessageSquare } from 'lucide-react'
 
 interface Specification {
   id: string
@@ -14,9 +14,13 @@ interface ProductSpecificationsProps {
   specifications: Specification[]
   setSpecifications: (specifications: Specification[]) => void
   onGenerateAI?: () => void
+  showGuidedInput?: boolean
+  onToggleGuided?: () => void
+  guidedInstructions?: string
+  onInstructionsChange?: (value: string) => void
 }
 
-export default function ProductSpecifications({ specifications, setSpecifications, onGenerateAI }: ProductSpecificationsProps) {
+export default function ProductSpecifications({ specifications, setSpecifications, onGenerateAI, showGuidedInput, onToggleGuided, guidedInstructions, onInstructionsChange }: ProductSpecificationsProps) {
   const [newSpecTitle, setNewSpecTitle] = useState('')
   const [newSpecValue, setNewSpecValue] = useState('')
   const [newSpecType, setNewSpecType] = useState<'string' | 'number'>('string')
@@ -82,14 +86,28 @@ export default function ProductSpecifications({ specifications, setSpecification
         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Specifications</h3>
         <div className="flex items-center gap-3">
           {onGenerateAI && (
-            <button
-              type="button"
-              onClick={onGenerateAI}
-              className="text-xs flex items-center gap-1.5 text-[#d4af37] hover:text-[#b8941f] transition-colors font-bold uppercase tracking-wider cursor-pointer"
-            >
-              <Sparkles className="w-3 h-3" />
-              Auto-Fill
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={onGenerateAI}
+                className="text-[10px] flex items-center gap-1 text-[#d4af37] hover:text-[#b8941f] transition-colors font-bold uppercase tracking-wider cursor-pointer"
+                title="Quick Auto-Fill"
+              >
+                <Sparkles className="w-3 h-3" />
+                Auto
+              </button>
+              {onToggleGuided && (
+                <button
+                  type="button"
+                  onClick={onToggleGuided}
+                  className={`text-[10px] flex items-center gap-1 transition-colors font-bold uppercase tracking-wider cursor-pointer ${showGuidedInput ? 'text-blue-500' : 'text-gray-400 hover:text-gray-600'}`}
+                  title="Guided AI with Instructions"
+                >
+                  <MessageSquare className="w-3 h-3" />
+                  Guided
+                </button>
+              )}
+            </>
           )}
           <button
             type="button"
@@ -101,6 +119,18 @@ export default function ProductSpecifications({ specifications, setSpecification
           </button>
         </div>
       </div>
+      {showGuidedInput && (
+        <div className="mb-4 animate-in fade-in slide-in-from-top-1 duration-200">
+          <input 
+            type="text"
+            placeholder="e.g., Focus on diamond clarity and gold weight"
+            value={guidedInstructions || ''}
+            onChange={(e) => onInstructionsChange?.(e.target.value)}
+            className="w-full px-4 py-2 text-sm bg-blue-50/50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/20 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-700 dark:text-gray-300"
+            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), onGenerateAI?.())}
+          />
+        </div>
+      )}
       
       <div className="mb-4 p-3 bg-gray-50 dark:bg-[#2a2a2a] rounded-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-2">

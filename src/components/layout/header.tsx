@@ -324,7 +324,7 @@ export default function Header() {
                     >
                       <div className="relative size-12 rounded overflow-hidden flex-shrink-0">
                         <img
-                          src={product.images[0] || "/placeholder.svg"}
+                          src={((Array.isArray(product.images) ? product.images.find((img: any) => img.type === 'front')?.url : null) || product.images?.[0]?.url || product.images?.[0] || "/placeholder.svg")}
                           alt={product.name}
                           className="object-cover w-full h-full"
                         />

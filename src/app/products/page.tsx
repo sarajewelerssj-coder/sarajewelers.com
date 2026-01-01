@@ -148,11 +148,12 @@ function ProductsContent() {
     if (existingItemIndex >= 0) {
       existingCart[existingItemIndex].quantity += 1
     } else {
+      const frontImage = product.images?.find((img: any) => img.type === 'front')?.url || product.images?.[0]?.url || product.images?.[0] || '/placeholder.svg'
       existingCart.push({
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images[0],
+        image: frontImage,
         quantity: 1,
         selectedSize: product.variations?.sizes?.[0] || "",
         selectedColor: product.variations?.colors?.[0] || "",
@@ -172,11 +173,12 @@ function ProductsContent() {
     const existingWishlist = JSON.parse(localStorage.getItem("wishlist") || "[]")
     const existingItemIndex = existingWishlist.findIndex((item: any) => item.id === product.id)
     if (existingItemIndex < 0) {
+      const frontImage = product.images?.find((img: any) => img.type === 'front')?.url || product.images?.[0]?.url || product.images?.[0] || '/placeholder.svg'
       existingWishlist.push({
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images[0],
+        image: frontImage,
       })
       localStorage.setItem("wishlist", JSON.stringify(existingWishlist))
       window.dispatchEvent(new Event("wishlistUpdated"))
@@ -262,7 +264,11 @@ function ProductsContent() {
           {/* Products grid */}
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {filteredProducts.length > 0 ? (
-              filteredProducts.map((product, index) => (
+              filteredProducts.map((product, index) => {
+                const frontImage = product.images?.find((img: any) => img.type === 'front')?.url || product.images?.[0] || '/placeholder.svg'
+                const backImage = product.images?.find((img: any) => img.type === 'back')?.url || product.images?.[1]
+
+                return (
                 <div
                   key={product.id}
                   className="group relative bg-white dark:bg-[#1e1e1e] rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-[#d4af37]/20 dark:hover:shadow-[#f4d03f]/20 transition-all duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-800 hover:border-[#d4af37]/40 dark:hover:border-[#f4d03f]/40"
@@ -271,14 +277,14 @@ function ProductsContent() {
                 >
                 <div className="relative aspect-square overflow-hidden">
                   <Image
-                    src={product.images?.[0] || "/placeholder.svg"}
+                    src={frontImage}
                     alt={product.name}
                     fill
                     className="object-cover transition-all duration-500"
                   />
-                  {hoveredProduct === product.id && product.images?.[1] && (
+                  {hoveredProduct === product.id && backImage && (
                     <Image
-                      src={product.images[1]}
+                      src={backImage}
                       alt={product.name}
                       fill
                       className="object-cover absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -359,7 +365,8 @@ function ProductsContent() {
                   </div>
                 </div>
               </div>
-              ))
+              )
+              })
             ) : (
               <div className="col-span-full flex flex-col items-center justify-center min-h-[400px] text-center">
                 <div className="w-24 h-24 bg-gradient-to-br from-[#d4af37] to-[#f4d03f] rounded-full flex items-center justify-center mb-6 shadow-lg">

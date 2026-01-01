@@ -216,7 +216,15 @@ export default function ProductPage() {
         id: product.id,
         name: product.name,
         price: totalPrice,
-        image: product.images[0],
+        image: (() => {
+          if (Array.isArray(product.images)) {
+            const front = product.images.find((img: any) => typeof img === 'object' && img.type === 'front')
+            if (front) return front.url
+            const first = product.images[0]
+            return typeof first === 'string' ? first : first?.url
+          }
+          return '/placeholder.svg'
+        })(),
         slug: product.slug,
         quantity,
       })
@@ -250,7 +258,15 @@ export default function ProductPage() {
         id: product.id,
         name: product.name,
         price: totalPrice,
-        image: product.images[0],
+        image: (() => {
+          if (Array.isArray(product.images)) {
+            const front = product.images.find((img: any) => typeof img === 'object' && img.type === 'front')
+            if (front) return front.url
+            const first = product.images[0]
+            return typeof first === 'string' ? first : first?.url
+          }
+          return '/placeholder.svg'
+        })(),
         slug: product.slug,
       })
 
@@ -368,7 +384,18 @@ export default function ProductPage() {
   const totalReviews = product.reviews?.length || product.reviewCount || 0
   const displayedReviews = showAllReviews ? (product.reviews || []) : (product.reviews || []).slice(0, 3)
 
-  const isVideo = (src: string) => src.includes(".mp4") || src.includes(".webm")
+  const getMediaUrl = (media: any) => {
+    if (!media) return ''
+    if (typeof media === 'string') return media
+    return media.url || ''
+  }
+
+  const isVideo = (media: any) => {
+    const src = getMediaUrl(media).toLowerCase()
+    if (typeof media === 'object' && media?.isVideo) return true
+    return src.includes(".mp4") || src.includes(".webm")
+  }
+
   const currentMedia = product.images[selectedImageIndex]
 
   return (
@@ -411,7 +438,7 @@ export default function ProductPage() {
               <div className="relative aspect-square overflow-hidden rounded-2xl bg-white dark:bg-gray-900 shadow-lg group">
                 {isVideo(currentMedia) ? (
                   <video
-                    src={currentMedia}
+                    src={getMediaUrl(currentMedia)}
                     controls
                     autoPlay={isVideoPlaying}
                     className="w-full h-full object-contain"
@@ -420,7 +447,7 @@ export default function ProductPage() {
                   />
                 ) : (
                   <Image 
-                    src={currentMedia || "/placeholder.svg"} 
+                    src={getMediaUrl(currentMedia) || "/placeholder.svg"} 
                     alt={product.name} 
                     fill 
                     className="object-contain transition-transform duration-500 group-hover:scale-105" 
@@ -458,7 +485,7 @@ export default function ProductPage() {
 
               {/* Thumbnail Gallery */}
               <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
-                {product.images.map((image: string, index: number) => (
+                {product.images.map((image: any, index: number) => (
                   <button
                     key={index}
                     onClick={() => {
@@ -497,7 +524,7 @@ export default function ProductPage() {
                     ) : (
                       <>
                         <Image
-                          src={image || "/placeholder.svg"}
+                          src={getMediaUrl(image) || "/placeholder.svg"}
                           alt={`${product.name} view ${index + 1}`}
                           fill
                           className="object-cover transition-transform duration-300 group-hover:scale-110"
@@ -773,7 +800,10 @@ export default function ProductPage() {
                   <div className="space-y-6">
                     <div className="relative overflow-hidden rounded-2xl aspect-[3/4] shadow-lg group">
                       <Image 
-                        src={product.images[1] || product.images[0] || "/placeholder.svg"} 
+                        src={(() => {
+                          const back = product.images.find((img: any) => typeof img === 'object' && img.type === 'back')
+                          return back ? back.url : (getMediaUrl(product.images[1]) || getMediaUrl(product.images[0]) || "/placeholder.svg")
+                        })()}
                         alt="Product detail" 
                         fill 
                         className="object-cover transition-transform duration-700 group-hover:scale-110" 

@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXTAUTH_URL || 'https://sarajeweler.com'
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://www.sarajeweler.com'
 
   // Static routes
   const staticRoutes = [

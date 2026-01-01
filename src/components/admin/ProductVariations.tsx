@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, X, Sparkles } from 'lucide-react'
+import { Plus, X, Sparkles, MessageSquare } from 'lucide-react'
 
 interface Variation {
   id: string
@@ -13,9 +13,13 @@ interface ProductVariationsProps {
   variations: Variation[]
   setVariations: (variations: Variation[]) => void
   onGenerateAI?: () => void
+  showGuidedInput?: boolean
+  onToggleGuided?: () => void
+  guidedInstructions?: string
+  onInstructionsChange?: (value: string) => void
 }
 
-export default function ProductVariations({ variations, setVariations, onGenerateAI }: ProductVariationsProps) {
+export default function ProductVariations({ variations, setVariations, onGenerateAI, showGuidedInput, onToggleGuided, guidedInstructions, onInstructionsChange }: ProductVariationsProps) {
   const [newVariationTitle, setNewVariationTitle] = useState('')
   const [variationInputValues, setVariationInputValues] = useState<Record<string, string>>({})
   const [savedVariations, setSavedVariations] = useState<string[]>([])
@@ -99,14 +103,28 @@ export default function ProductVariations({ variations, setVariations, onGenerat
         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Product Variations</h3>
         <div className="flex items-center gap-3">
           {onGenerateAI && (
-            <button
-              type="button"
-              onClick={onGenerateAI}
-              className="text-xs flex items-center gap-1.5 text-[#d4af37] hover:text-[#b8941f] transition-colors font-bold uppercase tracking-wider cursor-pointer"
-            >
-              <Sparkles className="w-3 h-3" />
-              Auto-Fill
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={onGenerateAI}
+                className="text-[10px] flex items-center gap-1 text-[#d4af37] hover:text-[#b8941f] transition-colors font-bold uppercase tracking-wider cursor-pointer"
+                title="Quick Auto-Fill"
+              >
+                <Sparkles className="w-3 h-3" />
+                Auto
+              </button>
+              {onToggleGuided && (
+                <button
+                  type="button"
+                  onClick={onToggleGuided}
+                  className={`text-[10px] flex items-center gap-1 transition-colors font-bold uppercase tracking-wider cursor-pointer ${showGuidedInput ? 'text-blue-500' : 'text-gray-400 hover:text-gray-600'}`}
+                  title="Guided AI with Instructions"
+                >
+                  <MessageSquare className="w-3 h-3" />
+                  Guided
+                </button>
+              )}
+            </>
           )}
           <button
             type="button"
@@ -118,6 +136,18 @@ export default function ProductVariations({ variations, setVariations, onGenerat
           </button>
         </div>
       </div>
+      {showGuidedInput && (
+        <div className="mb-4 animate-in fade-in slide-in-from-top-1 duration-200">
+          <input 
+            type="text"
+            placeholder="e.g., Suggest ring sizes from 6 to 10"
+            value={guidedInstructions || ''}
+            onChange={(e) => onInstructionsChange?.(e.target.value)}
+            className="w-full px-4 py-2 text-sm bg-blue-50/50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/20 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-700 dark:text-gray-300"
+            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), onGenerateAI?.())}
+          />
+        </div>
+      )}
       
       <div className="mb-4 p-3 bg-gray-50 dark:bg-[#2a2a2a] rounded-lg">
         <div className="flex gap-2 mb-2">

@@ -196,21 +196,33 @@ export default function GiftCollection() {
               className="group bg-white dark:bg-[#1e1e1e] rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-[#d4af37]/20 dark:hover:shadow-[#f4d03f]/20 transition-all duration-500 hover:-translate-y-2 border border-gray-100 dark:border-gray-800 hover:border-[#d4af37]/40 dark:hover:border-[#f4d03f]/40"
             >
               <div className="aspect-square relative overflow-hidden">
-                {/* Primary Image */}
-                <Image
-                  src={product.images[0] || "/placeholder.svg"}
-                  alt={product.name}
-                  fill
-                  className="object-cover transition-opacity duration-300 group-hover:opacity-0"
-                />
-                
-                {/* Secondary Image (shown on hover) */}
-                <Image
-                  src={product.images[1] || product.images[0] || "/placeholder.svg"}
-                  alt={`${product.name} - alternate view`}
-                  fill
-                  className="object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                />
+                {(() => {
+                  // Find front and back images by type
+                  const frontImage = product.images?.find((img: any) => img.type === 'front')?.url || product.images?.[0]?.url || product.images?.[0] || '/placeholder.svg'
+                  const backImage = product.images?.find((img: any) => img.type === 'back')?.url || null
+                  
+                  return (
+                    <>
+                      {/* Primary Image (Front) */}
+                      <Image
+                        src={frontImage}
+                        alt={product.name}
+                        fill
+                        className="object-cover transition-opacity duration-300 group-hover:opacity-0"
+                      />
+                      
+                      {/* Secondary Image (Back - shown on hover) */}
+                      {backImage && (
+                        <Image
+                          src={backImage}
+                          alt={`${product.name} - Back view`}
+                          fill
+                          className="object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        />
+                      )}
+                    </>
+                  )
+                })()}
                 
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
               </div>

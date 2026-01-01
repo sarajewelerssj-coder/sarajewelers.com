@@ -213,12 +213,14 @@ export default function CategoryPage() {
       // Update quantity if item exists
       existingCart[existingItemIndex].quantity += 1
     } else {
+      // Find front image by type
+      const frontImage = product.images?.find((img: any) => img.type === 'front')?.url || product.images?.[0]?.url || product.images?.[0] || '/placeholder.svg'
       // Add new item if it doesn't exist
       existingCart.push({
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images[0],
+        image: frontImage,
         quantity: 1,
         selectedSize: product.variations?.sizes?.[0] || "",
         selectedColor: product.variations?.colors?.[0] || "",
@@ -249,12 +251,14 @@ export default function CategoryPage() {
     const existingItemIndex = existingWishlist.findIndex((item: any) => item.id === product.id)
 
     if (existingItemIndex < 0) {
+      // Find front image by type
+      const frontImage = product.images?.find((img: any) => img.type === 'front')?.url || product.images?.[0]?.url || product.images?.[0] || '/placeholder.svg'
       // Add new item if it doesn't exist
       existingWishlist.push({
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images[0],
+        image: frontImage,
       })
 
       // Save updated wishlist to localStorage

@@ -27,14 +27,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://sarajewelers.com'),
+  metadataBase: new URL('https://www.sarajeweler.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: "Sara Jewelers | Fine Diamond Jewelry & Custom Designs",
     description: "Discover exquisite diamond engagement rings and custom jewelry designs. Quality craftsmanship and certified stones.",
-    url: 'https://sarajewelers.com',
+    url: 'https://www.sarajeweler.com',
     siteName: 'Sara Jewelers',
     images: [
       {
@@ -75,9 +75,9 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "JewelryStore",
   "name": "Sara Jewelers",
-  "image": "https://sarajewelers.com/logo.webp",
-  "@id": "https://sarajewelers.com",
-  "url": "https://sarajewelers.com",
+  "image": "https://www.sarajeweler.com/logo.webp",
+  "@id": "https://www.sarajeweler.com",
+  "url": "https://www.sarajeweler.com",
   "telephone": "+1-609-677-1111", // Placeholder - adjust if needed
   "address": {
     "@type": "PostalAddress",

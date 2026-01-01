@@ -105,7 +105,13 @@ export default function FeaturedProducts() {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images[0],
+        image: (() => {
+          if (Array.isArray(product.images)) {
+            const front = product.images.find((img: any) => img.type === 'front')
+            if (front) return front.url || front
+          }
+          return product.images[0]?.url || product.images[0]
+        })(),
         quantity: 1,
         selectedVariations: {}, // Variations can be selected on detail page
       })
@@ -132,7 +138,13 @@ export default function FeaturedProducts() {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images[0],
+        image: (() => {
+          if (Array.isArray(product.images)) {
+            const front = product.images.find((img: any) => img.type === 'front')
+            if (front) return front.url || front
+          }
+          return product.images[0]?.url || product.images[0]
+        })(),
       })
 
       localStorage.setItem("wishlist", JSON.stringify(existingWishlist))

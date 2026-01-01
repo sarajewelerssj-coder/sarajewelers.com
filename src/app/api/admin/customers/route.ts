@@ -22,7 +22,7 @@ export async function GET() {
     for (const user of users) {
       const email = user.email.toLowerCase()
       // Skip admin accounts
-      if (user.role === 'admin' || email === 'admin@sarajewelers.com') continue
+      if (user.role === 'admin' || email === 'admin@sarajeweler.com') continue
 
       customerMap.set(email, {
         id: (user._id as any).toString(),

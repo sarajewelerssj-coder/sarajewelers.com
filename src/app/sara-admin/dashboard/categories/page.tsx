@@ -358,6 +358,7 @@ export default function CategoriesPage() {
 
       <ConfirmDialog
         isOpen={showDeleteDialog}
+        isLoading={deleting}
         onClose={() => {
           if (!deleting) {
             setShowDeleteDialog(false)

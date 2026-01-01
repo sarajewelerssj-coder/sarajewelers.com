@@ -796,6 +796,7 @@ export default function GalleryUploadPage() {
 
       <ConfirmDialog
         isOpen={showDeleteDialog}
+        isLoading={deleting}
         onClose={() => {
           if (!deleting) {
             setShowDeleteDialog(false)

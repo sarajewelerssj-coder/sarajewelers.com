@@ -372,19 +372,8 @@ export default function AddProductPage() {
     }
   }
 
-  const handlePriceChange = (value: string) => {
-    setFormData(prev => {
-      const newPrice = value
-      let newOldPrice = prev.oldPrice
-      
-      // If price is entered and oldPrice is empty, suggest price + 20%
-      if (newPrice && (!prev.oldPrice || prev.oldPrice === (parseFloat(prev.price) * 1.2).toFixed(2))) {
-        newOldPrice = (parseFloat(newPrice) * 1.2).toFixed(2)
-      }
-      
-      return { ...prev, price: newPrice, oldPrice: newOldPrice }
-    })
-  }
+  // Removed auto-calculation - admin has full control over pricing
+  // Price, oldPrice, and discount are independent fields
 
   const handleGenerateAISpecs = async () => {
     if (!formData.name) {
@@ -964,7 +953,7 @@ export default function AddProductPage() {
                         step="0.01"
                         min="0"
                         value={formData.price}
-                        onChange={(e) => handlePriceChange(e.target.value)}
+                        onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                         className="w-full pl-8 pr-4 py-2 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#d4af37] text-gray-900 dark:text-gray-100"
                         placeholder="0.00"
                       />
@@ -1066,8 +1055,24 @@ export default function AddProductPage() {
               </div>
             </div>
 
-            <ProductVariations variations={variations} setVariations={setVariations} onGenerateAI={handleGenerateAIVariations} />
-            <ProductSpecifications specifications={specifications} setSpecifications={setSpecifications} onGenerateAI={handleGenerateAISpecs} />
+            <ProductVariations 
+              variations={variations} 
+              setVariations={setVariations} 
+              onGenerateAI={handleGenerateAIVariations}
+              showGuidedInput={activeInstructionField === 'variations'}
+              onToggleGuided={() => setActiveInstructionField(activeInstructionField === 'variations' ? null : 'variations')}
+              guidedInstructions={aiInstructions.variations}
+              onInstructionsChange={(value) => setAiInstructions({...aiInstructions, variations: value})}
+            />
+            <ProductSpecifications 
+              specifications={specifications} 
+              setSpecifications={setSpecifications} 
+              onGenerateAI={handleGenerateAISpecs}
+              showGuidedInput={activeInstructionField === 'specifications'}
+              onToggleGuided={() => setActiveInstructionField(activeInstructionField === 'specifications' ? null : 'specifications')}
+              guidedInstructions={aiInstructions.specifications}
+              onInstructionsChange={(value) => setAiInstructions({...aiInstructions, specifications: value})}
+            />
 
           </div>
 

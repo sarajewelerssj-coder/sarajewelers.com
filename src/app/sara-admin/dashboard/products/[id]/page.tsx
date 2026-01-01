@@ -13,6 +13,7 @@ export default function ProductViewPage() {
   const [product, setProduct] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     fetchProduct()
@@ -38,6 +39,7 @@ export default function ProductViewPage() {
   }
 
   const handleDelete = async () => {
+    setIsDeleting(true)
     try {
       const response = await fetch(`/api/admin/products/${productId}`, { method: 'DELETE' })
       if (response.ok) {
@@ -45,9 +47,13 @@ export default function ProductViewPage() {
         router.push('/sara-admin/dashboard/products')
       } else {
         toast.error('Failed to delete product')
+        setIsDeleting(false) 
+        setShowDeleteDialog(false)
       }
     } catch (error) {
       toast.error('Failed to delete product')
+      setIsDeleting(false)
+      setShowDeleteDialog(false)
     }
   }
 
@@ -430,6 +436,7 @@ export default function ProductViewPage() {
         message={`Are you sure you want to delete "${product?.name}"? This action cannot be undone.`}
         confirmText="Delete"
         type="danger"
+        isLoading={isDeleting}
       />
     </div>
   )

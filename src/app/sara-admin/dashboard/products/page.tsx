@@ -30,6 +30,7 @@ export default function ProductsPage() {
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, pages: 0 })
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [deleteProductId, setDeleteProductId] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     fetchProducts()
@@ -72,6 +73,7 @@ export default function ProductsPage() {
         ...fullProduct,
         // Keep the same name, description, and all content
         sku: `${fullProduct.sku}-COPY-${Math.floor(Math.random() * 1000)}`, // Only change SKU for uniqueness
+        slug: `${fullProduct.slug || fullProduct.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-copy-${Math.floor(Math.random() * 1000)}`, // Ensure unique slug
         status: 'draft',
         _id: undefined, // Remove ID to create new
         createdAt: undefined,
@@ -102,6 +104,7 @@ export default function ProductsPage() {
 
   const handleDelete = async () => {
     if (!deleteProductId) return
+    setIsDeleting(true)
     
     try {
       const response = await fetch(`/api/admin/products/${deleteProductId}`, { method: 'DELETE' })
@@ -114,6 +117,7 @@ export default function ProductsPage() {
     } catch (error) {
       toast.error('Failed to delete product')
     } finally {
+      setIsDeleting(false)
       setShowDeleteDialog(false)
       setDeleteProductId(null)
     }
@@ -323,6 +327,7 @@ export default function ProductsPage() {
       {/* Confirm Delete Dialog */}
       <ConfirmDialog
         isOpen={showDeleteDialog}
+        isLoading={isDeleting}
         onClose={() => setShowDeleteDialog(false)}
         onConfirm={handleDelete}
         title="Delete Product"

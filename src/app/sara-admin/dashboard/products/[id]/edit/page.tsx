@@ -251,47 +251,8 @@ export default function ProductEditPage() {
     }
   }
 
-  const handlePriceChange = (value: string) => {
-    setFormData(prev => {
-      const newPrice = value
-      let newDiscount = prev.discount
-      
-      if (newPrice && prev.oldPrice && parseFloat(prev.oldPrice) > 0) {
-        const diff = parseFloat(prev.oldPrice) - parseFloat(newPrice)
-        newDiscount = Math.round((diff / parseFloat(prev.oldPrice)) * 100).toString()
-      }
-      
-      return { ...prev, price: newPrice, discount: newDiscount }
-    })
-  }
-
-  const handleOldPriceChange = (value: string) => {
-    setFormData(prev => {
-      const newOldPrice = value
-      let newPrice = prev.price
-      
-      if (newOldPrice && prev.discount) {
-        const discountAmount = (parseFloat(newOldPrice) * parseFloat(prev.discount)) / 100
-        newPrice = (parseFloat(newOldPrice) - discountAmount).toFixed(2)
-      }
-      
-      return { ...prev, oldPrice: newOldPrice, price: newPrice }
-    })
-  }
-
-  const handleDiscountChange = (value: string) => {
-    setFormData(prev => {
-      const newDiscount = value
-      let newPrice = prev.price
-      
-      if (prev.oldPrice && newDiscount) {
-        const discountAmount = (parseFloat(prev.oldPrice) * parseFloat(newDiscount)) / 100
-        newPrice = (parseFloat(prev.oldPrice) - discountAmount).toFixed(2)
-      }
-      
-      return { ...prev, discount: newDiscount, price: newPrice }
-    })
-  }
+  // Removed auto-calculation handlers - admin has full control over pricing
+  // Price, oldPrice, and discount are saved exactly as entered
 
   const handleGenerateAISpecs = async () => {
     if (!formData.name) {
@@ -911,7 +872,7 @@ export default function ProductEditPage() {
                         step="0.01"
                         min="0"
                         value={formData.price}
-                        onChange={(e) => handlePriceChange(e.target.value)}
+                        onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                         className="w-full pl-8 pr-4 py-2 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#d4af37] text-gray-900 dark:text-gray-100"
                         placeholder="0.00"
                       />
@@ -928,7 +889,7 @@ export default function ProductEditPage() {
                         step="0.01"
                         min="0"
                         value={formData.oldPrice}
-                        onChange={(e) => handleOldPriceChange(e.target.value)}
+                        onChange={(e) => setFormData({ ...formData, oldPrice: e.target.value })}
                         className="w-full pl-8 pr-4 py-2 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#d4af37] text-gray-900 dark:text-gray-100"
                         placeholder="0.00"
                       />
@@ -944,7 +905,7 @@ export default function ProductEditPage() {
                     min="0"
                     max="100"
                     value={formData.discount}
-                    onChange={(e) => handleDiscountChange(e.target.value)}
+                    onChange={(e) => setFormData({ ...formData, discount: e.target.value })}
                     className="w-full px-4 py-2 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#d4af37] text-gray-900 dark:text-gray-100"
                     placeholder="0"
                   />
@@ -1018,6 +979,10 @@ export default function ProductEditPage() {
               variations={variations} 
               setVariations={setVariations} 
               onGenerateAI={handleGenerateAIVariations}
+              showGuidedInput={activeInstructionField === 'variations'}
+              onToggleGuided={() => setActiveInstructionField(activeInstructionField === 'variations' ? null : 'variations')}
+              guidedInstructions={aiInstructions.variations}
+              onInstructionsChange={(value) => setAiInstructions({...aiInstructions, variations: value})}
             />
             
             {/* Product Specifications */}
@@ -1025,6 +990,10 @@ export default function ProductEditPage() {
               specifications={specifications} 
               setSpecifications={setSpecifications} 
               onGenerateAI={handleGenerateAISpecs}
+              showGuidedInput={activeInstructionField === 'specifications'}
+              onToggleGuided={() => setActiveInstructionField(activeInstructionField === 'specifications' ? null : 'specifications')}
+              guidedInstructions={aiInstructions.specifications}
+              onInstructionsChange={(value) => setAiInstructions({...aiInstructions, specifications: value})}
             />
             
           </div>

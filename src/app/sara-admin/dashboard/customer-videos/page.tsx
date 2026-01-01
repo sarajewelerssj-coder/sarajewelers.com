@@ -762,6 +762,7 @@ export default function CustomerVideosPage() {
 
       <ConfirmDialog
         isOpen={showDeleteDialog}
+        isLoading={deleting}
         onClose={() => setShowDeleteDialog(false)}
         onConfirm={() => handleDelete(deleteTarget?.id)}
         title={`Delete ${deleteTarget?.type === 'single' ? 'Video' : deleteTarget?.type === 'bulk' ? 'Selected Videos' : 'All Videos'}`}

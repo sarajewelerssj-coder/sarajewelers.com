@@ -68,7 +68,7 @@ async function seedSettingsInternal() {
   try {
     const data = {
       companyName: process.env.COMPANY_NAME || 'Sara Jewelers',
-      companyLogo: process.env.NEXT_PUBLIC_LOGO_URL || 'https://sarajewelers.com/logo.webp',
+      companyLogo: process.env.NEXT_PUBLIC_LOGO_URL || 'https://www.sarajeweler.com/logo.webp',
       contactEmail: process.env.EMAIL_USER || 'S.wcollections2@gmail.com',
     }
     
@@ -82,7 +82,7 @@ async function seedSettingsInternal() {
 
 async function createAdminAccount() {
   try {
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@sarajewelers.com'
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@sarajeweler.com'
     const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123'
     const adminName = process.env.ADMIN_NAME || 'Admin'
     
@@ -124,7 +124,7 @@ async function seedEmailTemplates() {
       {
         name: 'welcome_greetings',
         subject: 'Welcome to {{companyName}} - Your Luxury Journey Begins',
-        body: '<h1>✨ Welcome to {{companyName}}!</h1>\n<p>Hi <strong>{{name}}</strong>,</p>\n<p>Thank you for joining our exclusive family of fine jewelry enthusiasts. We\'re absolutely thrilled to have you with us and excited to accompany you on your journey to finding the perfect piece.</p>\n<div class="divider"></div>\n<p style="text-align: center; font-size: 17px; color: #666;">Explore our curated collections of timeless elegance and contemporary masterpieces, each piece crafted with exceptional artistry.</p>\n<div style="text-align: center;">\n  <a href="https://sarajewelers.com/shop" class="button-gold">Discover Collections</a>\n</div>\n<div class="info-box">\n  <p><strong>🎁 Welcome Gift:</strong> Enjoy exclusive member pricing on your first purchase!</p>\n  <p><strong>💎 Premium Service:</strong> Complimentary consultation with our jewelry experts</p>\n</div>\n<p>If you have any questions, our dedicated team is always here to help you find perfection.</p>\n<p>Best Regards,<br/><strong>The {{companyName}} Team</strong></p>',
+        body: '<h1>✨ Welcome to {{companyName}}!</h1>\n<p>Hi <strong>{{name}}</strong>,</p>\n<p>Thank you for joining our exclusive family of fine jewelry enthusiasts. We\'re absolutely thrilled to have you with us and excited to accompany you on your journey to finding the perfect piece.</p>\n<div class="divider"></div>\n<p style="text-align: center; font-size: 17px; color: #666;">Explore our curated collections of timeless elegance and contemporary masterpieces, each piece crafted with exceptional artistry.</p>\n<div style="text-align: center;">\n  <a href="https://www.sarajeweler.com/shop" class="button-gold">Discover Collections</a>\n</div>\n<div class="info-box">\n  <p><strong>🎁 Welcome Gift:</strong> Enjoy exclusive member pricing on your first purchase!</p>\n  <p><strong>💎 Premium Service:</strong> Complimentary consultation with our jewelry experts</p>\n</div>\n<p>If you have any questions, our dedicated team is always here to help you find perfection.</p>\n<p>Best Regards,<br/><strong>The {{companyName}} Team</strong></p>',
         placeholders: ['name', 'companyName'],
         type: 'system'
       },

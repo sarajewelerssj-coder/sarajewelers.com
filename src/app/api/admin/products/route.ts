@@ -63,15 +63,8 @@ export async function POST(request: NextRequest) {
       data.slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
     }
 
-    // Auto-calculate selling price if discount or oldPrice provided
-    if (data.oldPrice && data.discount !== undefined) {
-      const discountAmount = (Number(data.oldPrice) * Number(data.discount)) / 100
-      data.price = Number(data.oldPrice) - discountAmount
-    } else if (data.price && data.oldPrice && data.discount === undefined) {
-      // If price and oldPrice provided but no discount, calculate discount percentage
-      const diff = Number(data.oldPrice) - Number(data.price)
-      data.discount = Math.round((diff / Number(data.oldPrice)) * 100)
-    }
+    // Note: We do NOT auto-calculate prices anymore - admin has full control
+    // Price, oldPrice, and discount are saved exactly as provided
 
     const product = new Product(data)
     console.log('DEBUG: Product object before saving:', JSON.stringify(product, null, 2))

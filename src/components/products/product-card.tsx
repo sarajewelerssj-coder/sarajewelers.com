@@ -37,8 +37,21 @@ export default function ProductCard({ product }: ProductCardProps) {
     return img?.url || '/placeholder.svg'
   }
 
-  const mainImage = getImageUrl(product.images?.[0])
-  const hoverImage = product.images?.[1] ? getImageUrl(product.images[1]) : mainImage
+  const mainImage = (() => {
+    if (Array.isArray(product.images)) {
+      const front = product.images.find((img: any) => img.type === 'front')
+      if (front) return getImageUrl(front)
+    }
+    return getImageUrl(product.images?.[0])
+  })()
+
+  const hoverImage = (() => {
+    if (Array.isArray(product.images)) {
+      const back = product.images.find((img: any) => img.type === 'back')
+      if (back) return getImageUrl(back)
+    }
+    return product.images?.[1] ? getImageUrl(product.images[1]) : mainImage
+  })()
 
   const addToCart = (e: React.MouseEvent) => {
     e.preventDefault()

@@ -137,7 +137,13 @@ export default function SearchPage() {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images[0],
+        image: (() => {
+          if (Array.isArray(product.images)) {
+            const front = product.images.find((img: any) => img.type === 'front')
+            if (front) return front.url || front
+          }
+          return product.images[0]?.url || product.images[0]
+        })(),
         quantity: 1,
         selectedSize: product.variations?.sizes?.[0] || "",
         selectedColor: product.variations?.colors?.[0] || "",
@@ -165,7 +171,13 @@ export default function SearchPage() {
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images[0],
+        image: (() => {
+          if (Array.isArray(product.images)) {
+            const front = product.images.find((img: any) => img.type === 'front')
+            if (front) return front.url || front
+          }
+          return product.images[0]?.url || product.images[0]
+        })(),
       })
 
       localStorage.setItem("wishlist", JSON.stringify(existingWishlist))
@@ -301,7 +313,11 @@ export default function SearchPage() {
 
               {filteredProducts.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                  {filteredProducts.map((product, index) => (
+                  {filteredProducts.map((product, index) => {
+                    const frontImage = product.images?.find((img: any) => img.type === 'front')?.url || product.images?.[0] || '/placeholder.svg'
+                    const backImage = product.images?.find((img: any) => img.type === 'back')?.url || product.images?.[1]
+
+                    return (
                     <div
                       key={product.id}
                       className="group relative bg-white dark:bg-[#1e1e1e] rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-[#d4af37]/20 dark:hover:shadow-[#f4d03f]/20 transition-all duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-800 hover:border-[#d4af37]/40 dark:hover:border-[#f4d03f]/40"
@@ -310,14 +326,14 @@ export default function SearchPage() {
                     >
                       <div className="relative aspect-square overflow-hidden">
                         <Image
-                          src={productImages[index % productImages.length] || "/placeholder.svg"}
+                          src={frontImage}
                           alt={product.name}
                           fill
                           className="object-cover transition-all duration-500"
                         />
-                        {hoveredProduct === product.id && (
+                        {hoveredProduct === product.id && backImage && (
                           <Image
-                            src={productImages[(index + 1) % productImages.length] || "/placeholder.svg"}
+                            src={backImage}
                             alt={product.name}
                             fill
                             className="object-cover absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -398,7 +414,8 @@ export default function SearchPage() {
                         </div>
                       </div>
                     </div>
-                  ))}
+                  )
+                  })}
                 </div>
               ) : (
                 <div className="col-span-full flex flex-col items-center justify-center min-h-[400px] text-center">

@@ -43,7 +43,7 @@ export async function POST(req: Request) {
       - Responsive, inline CSS.
       - Colors: Gold (#d4af37), Black, White.
       - Placeholders: {{name}}, {{companyName}}.
-      - URLs: ALWAYS use 'https://sarajewelers.com'.
+      - URLs: ALWAYS use 'https://www.sarajeweler.com'.
       - Concise text: Max 150 words.
       ${instructionPrompt}`;
       
