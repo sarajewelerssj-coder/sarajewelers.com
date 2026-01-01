@@ -101,7 +101,13 @@ export default function ProductVariations({ variations, setVariations, onGenerat
     <div className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white/90 dark:bg-[#1e1e1e]/90 backdrop-blur-sm p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Product Variations</h3>
-        <div className="flex items-center gap-3">
+        
+        {/* Price Warning Note */}
+        <div className="hidden lg:block text-[10px] text-yellow-600 dark:text-yellow-500 bg-yellow-50 dark:bg-yellow-900/10 px-2 py-1 rounded border border-yellow-100 dark:border-yellow-900/20 max-w-sm leading-tight ml-2">
+            If adding price variations, set Base Price to 0 for full control.
+        </div>
+
+        <div className="flex-1 ml-auto flex items-center justify-end gap-3">
           {onGenerateAI && (
             <>
               <button

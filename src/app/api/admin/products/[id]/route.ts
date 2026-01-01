@@ -104,6 +104,17 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     // Delete the product
     await Product.findByIdAndDelete(id)
 
+    // Remove product from all collections
+    try {
+      const Collection = (await import('@/models/Collection')).default
+      await Collection.updateMany(
+        { "products.productId": id },
+        { $pull: { products: { productId: id } } }
+      )
+    } catch (collectionError) {
+      console.error('Error removing product from collections:', collectionError)
+    }
+
     return NextResponse.json({ message: 'Product and associated images deleted successfully' })
   } catch (error) {
     console.error('Error deleting product:', error)

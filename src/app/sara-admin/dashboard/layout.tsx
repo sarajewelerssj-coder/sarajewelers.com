@@ -3,8 +3,9 @@
 import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
-import { Home, Package, Tags, ShoppingBag, Images, Users2, Boxes, LogOut, Sun, Moon, Sparkles, ChevronLeft, ChevronRight, Video, ChevronDown, Gift, GripVertical, Bell, Mail, Settings as SettingsIcon } from 'lucide-react'
+import { Home, Package, Tags, ShoppingBag, Images, Users2, Boxes, LogOut, Sun, Moon, Sparkles, ChevronLeft, ChevronRight, Video, ChevronDown, Gift, GripVertical, Bell, Mail, Settings as SettingsIcon, HelpCircle } from 'lucide-react'
 import AdminChatWidget from '@/components/admin/admin-chat-widget'
+import AdminHelpModal from '@/components/admin/AdminHelpModal'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -411,7 +412,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   <Sparkles className="w-4 h-4 text-[#d4af37]" />
                   <span>Welcome, Admin</span>
                 </div>
+                
                 <div className="flex items-center gap-3 relative">
+                  <button 
+                    onClick={() => window.dispatchEvent(new CustomEvent('open-admin-help'))}
+                    className="p-2 text-gray-700 dark:text-gray-200 hover:bg-[#d4af37]/5 rounded-md border border-gray-200 dark:border-gray-700 cursor-pointer hidden md:block"
+                    title="Help & Shortcuts (Ctrl+I)"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                  </button>
+
                   <button 
                     onClick={() => setShowNotifications(!showNotifications)}
                     className="p-2 text-gray-700 dark:text-gray-200 hover:bg-[#d4af37]/5 rounded-md border border-gray-200 dark:border-gray-700 cursor-pointer relative"
@@ -506,6 +516,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </div>
       <AdminChatWidget />
+      <AdminHelpModal />
     </div>
   )
 }

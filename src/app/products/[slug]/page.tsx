@@ -75,13 +75,34 @@ export default function ProductPage() {
           setSelectedImageIndex(0)
           
           // Set default selections for all variations if available
+          // Set default selections for all variations if available
           if (data.product.variations) {
             const defaults: Record<string, string> = {}
+            
+            // Strategy: Find the combination that yields the lowest price
+            // Assuming variations are independent, we just pick the cheapest option for each variation set
             Object.entries(data.product.variations).forEach(([title, values]) => {
               if (Array.isArray(values) && values.length > 0) {
-                // Handle both string and object variations
-                const firstValue = values[0]
-                defaults[title] = typeof firstValue === 'string' ? firstValue : firstValue.value
+                // Find the value with the lowest price (or 0 if no price)
+                // We default to the first one, then search for a cheaper one
+                let bestOption = values[0]
+                let minPrice = typeof bestOption === 'object' ? (bestOption.price || 0) : 0
+                
+                // If it's just a string array, search doesn't matter (all price 0), so [0] is fine
+                // Only if objects with prices do we search
+                if (typeof bestOption === 'object') {
+                   values.forEach((val: any) => {
+                     if (typeof val === 'object') {
+                       const price = val.price || 0
+                       if (price < minPrice) {
+                         minPrice = price
+                         bestOption = val
+                       }
+                     }
+                   })
+                }
+
+                defaults[title] = typeof bestOption === 'string' ? bestOption : bestOption.value
               }
             })
             setSelectedVariations(defaults)

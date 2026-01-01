@@ -85,6 +85,22 @@ export async function POST(req: Request) {
       ${instructionPrompt}`;
       userContent = `Suggest technical specifications for a jewelry piece named "${productName}" in categories: ${categories ? categories.join(', ') : 'Jewelry'}.`;
       maxTokens = 800;
+    } else if (type === 'polish-name') {
+      systemPrompt = `You are a creative naming expert for luxury jewelry.
+      ${toneRule}
+      Task: Polish the product name.
+      Constraints:
+      1. Length: MINIMUM 3 words, MAXIMUM 9 words.
+      2. Relevance: Keep it relevant to the original input. Do not change the product type (e.g. don't change 'Ring' to 'Necklace').
+      3. Style: clear, amazing, simple words.
+      
+      Return ONLY JSON:
+      {
+        "polishedName": "Radiant Gold Eternity Ring"
+      }
+      ${instructionPrompt}`;
+      userContent = `Polish this product name: "${productName}".`;
+      maxTokens = 200;
     } else {
       const { productName, categories, keywords } = body;
       const isShort = type === 'short';
@@ -117,7 +133,7 @@ export async function POST(req: Request) {
 
     const content = response.choices[0].message.content || "";
 
-    if (['template', 'variations', 'specifications', 'pricing'].includes(type)) {
+    if (['template', 'variations', 'specifications', 'pricing', 'polish-name'].includes(type)) {
       try {
         // Clean any potential markdown wrapping
         const cleanedContent = content.replace(/```json\n?|\n?```/g, '').trim();

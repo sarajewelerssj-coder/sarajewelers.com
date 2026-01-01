@@ -79,6 +79,7 @@ export default function ProductEditPage() {
   const [generatingDesc, setGeneratingDesc] = useState(false)
   const [generatingLongDesc, setGeneratingLongDesc] = useState(false)
   const [generatingPricing, setGeneratingPricing] = useState(false)
+  const [generatingName, setGeneratingName] = useState(false)
 
   const STORAGE_KEY = `sara-admin-edit-product-${productId}`
 
@@ -251,6 +252,35 @@ export default function ProductEditPage() {
     }
   }
 
+  const handlePolishName = async () => {
+    if (!formData.name.trim()) {
+      toast.error('Please enter a name first')
+      return
+    }
+    setGeneratingName(true)
+    try {
+      const response = await fetch('/api/ai/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productName: formData.name,
+          type: 'polish-name',
+        })
+      })
+      const data = await response.json()
+      if (response.ok && data.polishedName) {
+        setFormData(prev => ({ ...prev, name: data.polishedName }))
+        toast.success('Name polished by AI!')
+      } else {
+        toast.error('Failed to polish name')
+      }
+    } catch (error) {
+      toast.error('AI generation failed')
+    } finally {
+      setGeneratingName(false)
+    }
+  }
+
   // Removed auto-calculation handlers - admin has full control over pricing
   // Price, oldPrice, and discount are saved exactly as entered
 
@@ -273,11 +303,26 @@ export default function ProductEditPage() {
       })
       const data = await response.json()
       if (response.ok && data.specifications) {
-        setSpecifications(data.specifications.map((s: any) => ({
+        const newSpecs = data.specifications.map((s: any) => ({
           id: Math.random().toString(36).substr(2, 9),
           ...s
-        })))
-        toast.success('Specifications generated!')
+        }))
+
+        setSpecifications(prev => {
+           const existingTitles = new Set(prev.map(p => p.title.toLowerCase()))
+           const distinctNew = newSpecs.filter((ns: any) => !existingTitles.has(ns.title.toLowerCase()))
+           
+           if (distinctNew.length === 0 && newSpecs.length > 0) {
+             toast.info('No new specifications added (duplicates skipped)')
+             return prev
+           }
+
+            if (distinctNew.length > 0) {
+             toast.success(`Added ${distinctNew.length} new specifications!`)
+          }
+
+           return [...prev, ...distinctNew]
+        })
       }
     } catch (error) {
       toast.error('Failed to generate specifications')
@@ -303,11 +348,26 @@ export default function ProductEditPage() {
       })
       const data = await response.json()
       if (response.ok && data.variations) {
-        setVariations(data.variations.map((v: any) => ({
+        const newVariations = data.variations.map((v: any) => ({
           id: Math.random().toString(36).substr(2, 9),
           ...v
-        })))
-        toast.success('Variations generated!')
+        }))
+        
+        setVariations(prev => {
+          const existingTitles = new Set(prev.map(p => p.title.toLowerCase()))
+          const distinctNew = newVariations.filter((nv: any) => !existingTitles.has(nv.title.toLowerCase()))
+          
+          if (distinctNew.length === 0 && newVariations.length > 0) {
+            toast.info('No new variations added (duplicates skipped)')
+            return prev
+          }
+          
+          if (distinctNew.length > 0) {
+             toast.success(`Added ${distinctNew.length} new variations!`)
+          }
+          
+          return [...prev, ...distinctNew]
+        })
       }
     } catch (error) {
       toast.error('Failed to generate variations')
@@ -672,14 +732,25 @@ export default function ProductEditPage() {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Product Name <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#d4af37] text-gray-900 dark:text-gray-100"
-                    placeholder="Enter product name"
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="flex-1 px-4 py-2 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#d4af37] text-gray-900 dark:text-gray-100"
+                      placeholder="Enter product name"
+                    />
+                    <button
+                      type="button"
+                      onClick={handlePolishName}
+                      disabled={generatingName || !formData.name}
+                      className="p-2 bg-gradient-to-r from-[#d4af37] to-[#f4d03f] hover:from-[#c5a028] hover:to-[#eec62f] text-black rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                      title="Polish with AI"
+                    >
+                      {generatingName ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

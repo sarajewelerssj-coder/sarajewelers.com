@@ -17,6 +17,7 @@ To provide a premium digital experience that matches the elegance of high-end je
 - **Elegant UI/UX**: Built with high-end aesthetics, smooth GSAP animations, and a responsive layout.
 - **Dynamic Catalog**: Browse by collections and categories with advanced filtering.
 - **Smart Wishlist**: Save favorite pieces for later and manage your luxury desires.
+- **Dynamic Pricing**: Product pages automatically find and display the **lowest price** among all variations (e.g., Ring sizes, Metals), ensuring transparency and "starts from" pricing logic.
 - **Account Security**: Profile management with secure verification.
 
 ### 💳 Sophisticated Checkout Flow
@@ -33,25 +34,35 @@ To provide a premium digital experience that matches the elegance of high-end je
 
 ### 🛠️ Powerful Admin Dashboard
 
-- **Inventory Engine**: Manage products, stock levels, discounts, and inventory statuses (Active/Draft) with ease.
+- **Command Center Shortcuts (New)**: Press `Ctrl + I` anywhere to open the **Admin Help Modal**, a quick reference guide for all power features.
+- **Smart Inventory & Cleanup**:
+  - Manage products (Active/Draft) and stock.
+  - **Auto-Cleanup**: Deleting a product automatically cleans it from all Collections (Featured, Gifts, etc.), preventing broken links.
 - **Order Command Center**: Track order fulfillment, verify payment receipts, and update customer status.
 - **Marketing Suite**:
   - Professional HTML Email Template Editor.
-  - Bulk Email Campaigns with **Anti-Spam Technology** (sequential sending with 3s delays).
-  - Protected System Templates (Welcome, Order, OTP).
-- **Customer Insights**: Deep dive into customer order history and community reviews.
+  - Bulk Email Campaigns with **Anti-Spam Technology**.
+  - Protected System Templates.
 
 ### 🤖 AI-Powered Intelligence (New)
 
+- **Admin Color-Coded AI**:
+
+  - **✨ Name Polish**: Rewrite product names to sound premium (strict 3-9 word limit, maintains product type).
+  - **💬 Guided Generation**: Instruct the AI specifically!
+    - _Example for Specs_: "Focus on diamond clarity and gold weight"
+    - _Example for Variations_: "Suggest ring sizes from 4 to 9"
+  - **Auto-Merge Logic**: AI suggestions for Variations/Specs are **appended** safely, never overwriting your existing data.
+
 - **Admin AI Strategist**: A sophisticated business consultant integrated into the dashboard.
+
   - **Real-Time Data**: Analysis of sales, revenue trends, inventory levels, and order statuses.
   - **Deep Customer Insights**: Access to VIP lists (Top Spenders), recent signups, and extensive customer data.
   - **Smart Controls**: Resizable chat window with "Stop Generation" capabilities.
+
 - **"Sara" Customer Assistant**: A luxury sales persona helping customers navigate collections and find their perfect piece.
-- **Marketing Auto-Write**: One-click AI generation for email campaigns, automatically creating:
-  - High-converting Subject Lines.
-  - Organized Internal Template Names.
-  - Beautiful, responsive HTML email bodies.
+
+- **Marketing Auto-Write**: One-click AI generation for email campaigns, automatically creating high-converting subject lines and HTML bodies.
 
 ---
 
@@ -103,6 +114,9 @@ CLOUDINARY_API_SECRET=your_api_secret
 EMAIL_USER=yourgmail@gmail.com
 EMAIL_PASS=your_gmail_app_password
 
+# --- AI (GROQ) ---
+GROQ_API_KEY=your_groq_api_key
+
 # --- ADMIN ---
 DEFAULT_ADMIN_NAME=Sara Jewelers Admin
 NEXT_PUBLIC_DEFAULT_ADMIN_EMAIL=admin@sarajewelers.com
@@ -115,7 +129,7 @@ SETUP_TOKEN=your_secure_random_token_here
 
 ```bash
 # Clone the repository
-git clone https://github.com/AliHamza-Coder/SaraJewelers.com.git
+git clone this repo
 
 # Install dependencies
 npm install
@@ -147,4 +161,4 @@ npm run build
 
 ---
 
-_© 2025 Sara Jewelers. All Rights Reserved._
+_© 2026 Sara Jewelers. All Rights Reserved._
